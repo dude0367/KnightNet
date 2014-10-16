@@ -31,6 +31,17 @@ public class Layer {
 	}
 
 	public double[] feedforward(double[] input) {
+		/*double[] output = new double[getNeurons().size()];
+		for(int i = 0; i < getNeurons().size(); i++) {
+			Neuron n = getNeurons().get(i);
+			double sum = 0;
+			for(int o = 0; o < ) {.
+				Neuron nn;
+				sum += n.weights.get(nn) * input;
+			}
+		}
+		if(next == null) return output;
+		return next.feedforward(output);*/
 		if(next == null) {
 			return input;
 		}
@@ -38,8 +49,9 @@ public class Layer {
 		for(int i = 0; i < next.getNeurons().size(); i++) {
 			Neuron n = next.getNeurons().get(i);
 			double sum = 0;
-			for(Neuron nn : getNeurons()) {
-				sum += n.weights.get(nn) * input[i];
+			for(int o = 0; o < getNeurons().size(); o++/*Neuron nn : getNeurons()*/) {
+				Neuron nn = getNeurons().get(o);
+				sum += n.weights.get(nn) * input[o];
 			}
 			output[i] = n.calcSigmoid(sum);
 		}
