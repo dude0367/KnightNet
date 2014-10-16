@@ -39,7 +39,7 @@ public class Layer {
 			Neuron n = next.getNeurons().get(i);
 			double sum = 0;
 			for(Neuron nn : getNeurons()) {
-				sum += n.weights.get(nn);
+				sum += n.weights.get(nn) * input[i];
 			}
 			output[i] = n.calcSigmoid(sum);
 		}

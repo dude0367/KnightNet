@@ -21,8 +21,9 @@ public class Network {
 		getLayers().add(new Layer(output, last, this));//Output layer
 	}
 	
-	public void process(double[] input) {
-		
+	public double[] process(double[] input) {
+		double[] output = layers.get(0).feedforward(input);
+		return output;
 	}
 
 	public ArrayList<Layer> getLayers() {
