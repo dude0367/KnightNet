@@ -12,6 +12,8 @@ public class TestGameJoust extends JFrame implements Runnable {
 	public static Thread thread;
 	public static boolean running = true;
 	
+	public int jousterCount = 10;
+	
 	public ArrayList<Jouster> jousters = new ArrayList<Jouster>();
 	
 	public void startgame() {
@@ -25,6 +27,11 @@ public class TestGameJoust extends JFrame implements Runnable {
 	
 	
 	public void run() {
+		for(int i = 0; i < jousterCount; i++) {
+			Jouster j = new Jouster(game);
+			
+			jousters.add(j);
+		}
 		while(running) {
 			tick();
 			draw();
