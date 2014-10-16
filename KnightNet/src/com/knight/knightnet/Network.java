@@ -22,8 +22,12 @@ public class Network {
 	}
 	
 	public double[] process(double[] input) {
-		double[] output = layers.get(0).feedforward(input);
+		double[] output = getFirstLayer().feedforward(input);
 		return output;
+	}
+	
+	public Layer getFirstLayer() {
+		return layers.get(0);
 	}
 
 	public ArrayList<Layer> getLayers() {
