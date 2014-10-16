@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import com.knight.knightnet.joust.TestGameJoust;
+
 /*(C) Copyright 2014-2015 dude0367 (Knight) & lkarinja (Karinja)
  * This program comes with absolutely no warranty.
  * This program is under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International
@@ -42,7 +44,7 @@ public class KnightNet {
 					out = "";
 					for(double d : output) out += d + "\n";
 				}
-				
+
 				else {
 					out = "Invalid input";
 				}
@@ -51,14 +53,19 @@ public class KnightNet {
 					System.out.println("Bye");
 					running = false;
 				} else
-				if(in.equalsIgnoreCase("reset") || in.equalsIgnoreCase("restart")) {
-					network = new Network(1, 2, 2, 3);
-					out = "Reset";
-				}
-				
-				else {
-					out = "Invalid input";
-				}
+					if(in.equalsIgnoreCase("reset") || in.equalsIgnoreCase("restart")) {
+						network = new Network(1, 2, 2, 3);
+						out = "Reset";
+					} else
+						if(in.equalsIgnoreCase("game1") || in.equalsIgnoreCase("joust")) {
+							TestGameJoust game = new TestGameJoust();
+							game.startgame();
+							out = "Starting Joust game";
+						}
+
+						else {
+							out = "Invalid input";
+						}
 			}
 		}
 	}
