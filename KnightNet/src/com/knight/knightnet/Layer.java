@@ -8,11 +8,17 @@ import java.util.ArrayList;
  */
 
 public class Layer {
-	
+
 	private ArrayList<Neuron> neurons = new ArrayList<Neuron>();//The neurons in this layer
 	private Layer previous;//The last layer
 	private Layer next;//The next layer
+	private Network network;
 	
+	public Layer(int size, Layer last, Network network) {
+		this(size, last);
+		this.setNetwork(network);
+	}
+
 	public Layer(int size, Layer last) {
 		setPrevious(last);
 		if(last != null) {
@@ -23,9 +29,26 @@ public class Layer {
 			neurons.add(n);
 		}
 	}
+
+	public double[] feedforward(double[] input) {
+		if(next == null) {
+			return input;
+		}
+		double[] output = new double[next.getNeurons().size()];
+		for(int i = 0; i < next.getNeurons().size(); i++) {
+			Neuron n = next.getNeurons().get(i);
+			double sum = 0;
+			for(Neuron nn : getNeurons()) {
+				sum += n.weights.get(nn);
+			}
+			output[i] = n.calcSigmoid(sum);
+		}
+		return next.feedforward(output);
+	}
 	
-	public void feedforward() {
-		if(next == null) return;
+	public Layer getFirstLayer() {
+		if(previous == null) return this;
+		return previous.getFirstLayer();
 	}
 
 	public Layer getPrevious() {
@@ -50,6 +73,14 @@ public class Layer {
 
 	public void setNeurons(ArrayList<Neuron> neurons) {
 		this.neurons = neurons;
+	}
+
+	public Network getNetwork() {
+		return network;
+	}
+
+	public void setNetwork(Network network) {
+		this.network = network;
 	}
 
 }

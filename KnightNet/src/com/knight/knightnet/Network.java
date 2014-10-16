@@ -12,19 +12,17 @@ public class Network {
 	private ArrayList<Layer> layers = new ArrayList<Layer>();
 	
 	public Network(int layers, int input, int output, int hiddensize) {
-		Layer last = new Layer(input, null);
+		Layer last = new Layer(input, null, this);
 		getLayers().add(last);//Input layer
 		for(int i = 0; i < layers; i++) {//Hidden layers
-			last = new Layer(hiddensize, last);
+			last = new Layer(hiddensize, last, this);
 			getLayers().add(last);
 		}
-		getLayers().add(new Layer(output, last));//Output layer
+		getLayers().add(new Layer(output, last, this));//Output layer
 	}
 	
 	public void process(double[] input) {
-		for(Neuron n : layers.get(0).getNeurons()) {
-			 System.out.println("Processing and stuff");
-		}
+		
 	}
 
 	public ArrayList<Layer> getLayers() {

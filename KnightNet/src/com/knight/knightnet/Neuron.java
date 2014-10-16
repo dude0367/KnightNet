@@ -11,6 +11,7 @@ public class Neuron {
 	
 	HashMap<Neuron, Double> weights = new HashMap<Neuron, Double>();
 	Layer layer;
+	private double curveMod = 1;
 	
 	public Neuron(Layer l) {
 		layer = l;
@@ -19,5 +20,9 @@ public class Neuron {
 				weights.put(n, (Math.random() - .5) * 2);//Random weight between -1 and 1
 			}
 		}
+	}
+	
+	public double calcSigmoid(double activation) {
+		return 1.0 / (1.0 + Math.pow(Math.E, (activation * -1) / curveMod));
 	}
 }
