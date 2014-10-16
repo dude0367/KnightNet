@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * This program is under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International
  * and no redistribution, commercial use, or modification can be made without contacting the program's developers.
  */
-
+ //TEST
 public class Network {
 	
 	private ArrayList<Layer> layers = new ArrayList<Layer>();
