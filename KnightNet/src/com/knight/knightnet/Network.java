@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * This program is under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International
  * and no redistribution, commercial use, or modification can be made without contacting the program's developers.
  */
- //TEST AGAIN AGAIN
+ //TEST AGAIN AGAIN AGAIN
 public class Network {
 	
 	private ArrayList<Layer> layers = new ArrayList<Layer>();
@@ -23,7 +23,7 @@ public class Network {
 	
 	public void process(double[] input) {
 		for(Neuron n : layers.get(0).getNeurons()) {
-			 
+			 System.out.println("Processing and stuff");
 		}
 	}
 
