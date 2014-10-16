@@ -13,12 +13,12 @@ public class Network {
 	
 	public Network(int layers, int input, int output, int hiddensize) {
 		Layer last = new Layer(input, null);
-		getLayers().add(last);
-		for(int i = 0; i < layers; i++) {
+		getLayers().add(last);//Input layer
+		for(int i = 0; i < layers; i++) {//Hidden layers
 			last = new Layer(hiddensize, last);
 			getLayers().add(last);
 		}
-		getLayers().add(new Layer(output, last));
+		getLayers().add(new Layer(output, last));//Output layer
 	}
 	
 	public void process(double[] input) {

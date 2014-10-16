@@ -16,7 +16,7 @@ public class Neuron {
 		layer = l;
 		if(layer.getPrevious() != null) {
 			for(Neuron n : layer.getPrevious().getNeurons()) {
-				weights.put(n, (Math.random() - .5) * 2);
+				weights.put(n, (Math.random() - .5) * 2);//Random weight between -1 and 1
 			}
 		}
 	}

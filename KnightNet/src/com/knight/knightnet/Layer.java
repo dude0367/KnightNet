@@ -9,16 +9,16 @@ import java.util.ArrayList;
 
 public class Layer {
 	
-	private ArrayList<Neuron> neurons = new ArrayList<Neuron>();
-	private Layer previous;
-	private Layer next;
+	private ArrayList<Neuron> neurons = new ArrayList<Neuron>();//The neurons in this layer
+	private Layer previous;//The last layer
+	private Layer next;//The next layer
 	
 	public Layer(int size, Layer last) {
 		setPrevious(last);
 		if(last != null) {
 			last.setNext(this);
 		}
-		for(int i = 0; i < size; i++) {
+		for(int i = 0; i < size; i++) {//Make the neurons in the layer
 			Neuron n = new Neuron(this);
 			neurons.add(n);
 		}
