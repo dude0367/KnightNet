@@ -23,7 +23,7 @@ public class Network {
 	
 	public void process(double[] input) {
 		for(Neuron n : layers.get(0).getNeurons()) {
-			 
+			 System.out.println("Processing and stuff");
 		}
 	}
 
