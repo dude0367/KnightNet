@@ -1,6 +1,11 @@
 package com.knight.knightnet;
 import java.util.ArrayList;
 
+/*(C) Copyright 2014-2015 dude0367 (Knight) & lkarinja (Karinja)
+ * This program comes with absolutely no warranty.
+ * This program is under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International
+ * and no redistribution, commercial use, or modification can be made without contacting the program's developers.
+ */
 
 public class Network {
 	

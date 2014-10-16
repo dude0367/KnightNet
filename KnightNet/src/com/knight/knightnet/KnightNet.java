@@ -1,5 +1,11 @@
 package com.knight.knightnet;
 
+/*(C) Copyright 2014-2015 dude0367 (Knight) & lkarinja (Karinja)
+ * This program comes with absolutely no warranty.
+ * This program is under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International
+ * and no redistribution, commercial use, or modification can be made without contacting the program's developers.
+ */
+
 public class KnightNet {
 
 	//Backpropagation guide: http://home.agh.edu.pl/~vlsi/AI/backp_t_en/backprop.html
