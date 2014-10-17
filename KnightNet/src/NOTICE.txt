@@ -1,0 +1,1 @@
+Nathan, throw the copyright header on to all of the source files.
