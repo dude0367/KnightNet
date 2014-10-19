@@ -5,14 +5,14 @@ import java.util.Random;
 
 public class Genome {
 	
-	int hiddenLayers = 1;
-	int neuronsPerLayer = 3;
-	int outputNeurons;
-	int inputNeurons;
-	Network network;
-	double mutationRate = 0.001;
-	double crossOverRate = .7;
-	ArrayList<Double> weights = new ArrayList<Double>();
+	protected int hiddenLayers = 1;
+	protected int neuronsPerLayer = 3;
+	protected int outputNeurons;
+	protected int inputNeurons;
+	protected Network network;
+	protected double mutationRate = 0.001;
+	protected double crossOverRate = .7;
+	protected ArrayList<Double> weights = new ArrayList<Double>();
 	
 	public Genome(int inputNeurons, int outputNeurons) {
 		this.outputNeurons = outputNeurons;
@@ -37,6 +37,12 @@ public class Genome {
 		} else {
 			//TODO: CHANGE THIS SO IT MAKES 2 BABBIES
 		}
+	}
+	
+	public static Genome[] crossover(Genome g1, Genome g2) {
+		Genome[] out = new Genome[2];
+		
+		return out;
 	}
 	
 	public void findWeights() {
