@@ -4,12 +4,17 @@ public class Agent {
 	private Genome genome;
 	protected double x, y;
 	protected double fitness;
+	protected Population population;
 	
 	public Agent() {
 		
 	}
 	
-	public Agent(Genome g) {
+	public Agent(Population pop) {
+		setPopulation(pop);
+	}
+	
+	public Agent(Genome g, Population pop) {
 		genome = g;
 	}
 	
@@ -34,6 +39,25 @@ public class Agent {
 
 	public void setY(double y) {
 		this.y = y;
+	}
+	
+	public void changeFitness(double delta) {
+		fitness += delta;
+		if(fitness > getPopulation().getFittest()) {
+			getPopulation().setFittest(fitness);
+		}
+	}
+	
+	public double getFitness() {
+		return fitness;
+	}
+
+	public Population getPopulation() {
+		return population;
+	}
+
+	public void setPopulation(Population population) {
+		this.population = population;
 	}
 
 }

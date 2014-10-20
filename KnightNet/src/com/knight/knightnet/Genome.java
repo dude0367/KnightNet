@@ -10,7 +10,7 @@ public class Genome {
 	protected int outputNeurons;
 	protected int inputNeurons;
 	protected Network network;
-	protected double mutationRate = 0.001;
+	protected static double mutationRate = 0.01;
 	protected double crossOverRate = .7;
 	protected ArrayList<Double> weights = new ArrayList<Double>();
 	
@@ -27,17 +27,23 @@ public class Genome {
 	
 	public static Genome[] crossover(Genome g1, Genome g2) {
 		Genome[] out = new Genome[2];
+		g1.findWeights();
+		g2.findWeights();
 		if(Math.random() < g1.crossOverRate) {
 			int toSwitch = new Random().nextInt(g1.weights.size());
 			ArrayList<Double> g1weights = new ArrayList<Double>();
 			ArrayList<Double> g2weights = new ArrayList<Double>();
 			for(int i = 0; i < toSwitch; i++) {
-				g1weights.add(g2.weights.get(i));
-				g2weights.add(g1.weights.get(i));
+				if(Math.random() > mutationRate) g1weights.add(g2.weights.get(i));
+				else g1weights.add(g2.weights.get(i) + (Math.random() - .5) * 2);
+				if(Math.random() > mutationRate) g2weights.add(g1.weights.get(i));
+				else g2weights.add(g1.weights.get(i) + (Math.random() - .5) * 2);
 			}
 			for(int i = toSwitch; i < g1.weights.size(); i++) {
-				g1weights.add(g1.weights.get(i));
-				g2weights.add(g2.weights.get(i));
+				if(Math.random() > mutationRate) g1weights.add(g1.weights.get(i));
+				else g1weights.add(g1.weights.get(i) + (Math.random() - .5) * 2);
+				if(Math.random() > mutationRate) g2weights.add(g2.weights.get(i));
+				else g2weights.add(g2.weights.get(i) + (Math.random() - .5) * 2);
 			}
 			out[0] = new Genome(g1weights, g1.inputNeurons, g1.outputNeurons);
 			out[1] = new Genome(g2weights, g1.inputNeurons, g1.outputNeurons);

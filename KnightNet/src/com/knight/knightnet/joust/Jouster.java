@@ -2,16 +2,25 @@ package com.knight.knightnet.joust;
 
 import com.knight.knightnet.Agent;
 import com.knight.knightnet.Genome;
+import com.knight.knightnet.Population;
 
 public class Jouster extends Agent {
-	public TestGameJoust game;
+	
 	private double lanceAngle;
-
-	public Jouster(TestGameJoust game) {
-		this.game = game;
+	
+	public Jouster(Population pop) {
+		super(pop);
 		setGenome(new Genome(3, 3));
 	}
-
+	
+	public Jouster(Agent a, Population pop) {
+		super(pop);
+		this.setGenome(a.getGenome());
+		this.setX(a.getX());
+		this.setY(a.getY());
+		this.fitness = a.getFitness();
+	}
+	
 	public double getLanceAngle() {
 		return lanceAngle;
 	}

@@ -7,12 +7,14 @@ import java.util.Random;
 public class Population {
 
 	public ArrayList<Agent> population;// = new ArrayList<Agent>();
+	private double fittest;
 
 	public Population(ArrayList agents) {
 		population = agents;
 	}
 
 	public void evolve() {
+		fittest = 0;
 		ArrayList<Agent> nextGen = new ArrayList<Agent>();
 		while(population.size() > 0) {
 			Agent agent1 = weightedRandom(population);
@@ -20,8 +22,8 @@ public class Population {
 			Agent agent2 = weightedRandom(population);
 			population.remove(agent2);
 			Genome[] babyGenomes = Genome.crossover(agent1.getGenome(), agent2.getGenome());
-			Agent baby1 = new Agent(babyGenomes[0]);
-			Agent baby2 = new Agent(babyGenomes[1]);
+			Agent baby1 = new Agent(babyGenomes[0], this);
+			Agent baby2 = new Agent(babyGenomes[1], this);
 			nextGen.add(baby1);
 			nextGen.add(baby2);
 		}
@@ -30,8 +32,7 @@ public class Population {
 
 	public Agent weightedRandom(ArrayList<Agent> pop) {
 		double sum = 0;
-		for(Agent t : population) {
-			Agent a = t;
+		for(Agent a : population) {
 			sum += a.fitness;
 		}
 		double rand = new Random().nextDouble() * sum;
@@ -43,6 +44,18 @@ public class Population {
 			}
 		}
 		return null;
+	}
+	
+	public void setAgents(ArrayList agents) {
+		population = agents;
+	}
+
+	public double getFittest() {
+		return fittest;
+	}
+
+	public void setFittest(double fittest) {
+		this.fittest = fittest;
 	}
 
 }
