@@ -7,20 +7,21 @@ import java.util.Random;
 public class Population {
 
 	public ArrayList<Agent> population;// = new ArrayList<Agent>();
-	private double fittest;
+	private double fittest = 1;
 
 	public Population(ArrayList agents) {
 		population = agents;
 	}
 
 	public void evolve() {
-		fittest = 0;
+		fittest = 1;
 		ArrayList<Agent> nextGen = new ArrayList<Agent>();
-		while(population.size() > 0) {
+		for(int i = 0; i < population.size(); i++) {
 			Agent agent1 = weightedRandom(population);
-			population.remove(agent1);
-			Agent agent2 = weightedRandom(population);
-			population.remove(agent2);
+			//population.remove(agent1);
+			Agent agent2 = agent1;//weightedRandom(population);
+			while(agent2 == agent1) agent2 = weightedRandom(population);
+			//population.remove(agent2);
 			Genome[] babyGenomes = Genome.crossover(agent1.getGenome(), agent2.getGenome());
 			Agent baby1 = new Agent(babyGenomes[0], this);
 			Agent baby2 = new Agent(babyGenomes[1], this);

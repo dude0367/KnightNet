@@ -4,11 +4,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
+import com.knight.input.InputHandler;
 import com.knight.knightnet.Population;
 
 public class TestGameJoust extends JFrame implements Runnable {
@@ -24,6 +26,8 @@ public class TestGameJoust extends JFrame implements Runnable {
 	int jousterLength = 5;
 	int lanceLength = 10;
 	public int ticks = 0;
+	int FPS = 30;
+	InputHandler input;
 	
 	public ArrayList<Jouster> jousters = new ArrayList<Jouster>();
 	Population pop;
@@ -34,6 +38,7 @@ public class TestGameJoust extends JFrame implements Runnable {
 		game.setTitle("KnightNet ANN Joust");
 		game.setVisible(true);
 		//game.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		input = new InputHandler(this);
 		thread = new Thread(game);
 		thread.start();
 	}
@@ -48,14 +53,26 @@ public class TestGameJoust extends JFrame implements Runnable {
 			jousters.add(j);
 		}
 		pop.setAgents(jousters);
+
+		long lastTime = System.currentTimeMillis();
+		long delta = System.currentTimeMillis() - lastTime;
+		long time = System.currentTimeMillis();
+		
 		while(running) {
 			tick();
 			draw();
+			time = (long) ((1000 / FPS) - (System.currentTimeMillis() - time));
+			if (time > 0) { 
+				try {
+					Thread.sleep(time); 
+				} 
+				catch(Exception e){} 
+			}
 		}
 	}
 	
 	void tick() {
-		if(ticks % 10000 == 0) {
+		if(ticks > 20 && input.getKey(KeyEvent.VK_SPACE)) {
 			System.out.println("EVOLVING");
 			System.out.println("PEAK FITNESS: " + pop.getFittest());
 			pop.evolve();
@@ -66,6 +83,7 @@ public class TestGameJoust extends JFrame implements Runnable {
 				j.setY(game.getHeight() * Math.random());
 				jousters.add(j);
 			}
+			ticks = 0;
 		}
 		for(Jouster j : jousters) {
 			double x = j.getX();
@@ -87,11 +105,12 @@ public class TestGameJoust extends JFrame implements Runnable {
 			double[] output = j.getGenome().getNetwork().process(new double[] {
 					x - closest.getX(), y - closest.getY(), j.getLanceAngle()
 			});
-			dist = Math.sqrt(Math.pow(output[0], 2) + Math.pow(output[1], 2));
-			output[0] /= dist;
-			output[1] /= dist;
 			output[0] -= .5;
 			output[1] -= .5;
+			dist = Math.sqrt(Math.pow(output[0], 2) + Math.pow(output[1], 2));
+			if(dist < 0.0001) dist = 1;
+			output[0] /= dist;
+			output[1] /= dist;
 			output[2] *= Math.PI * 2;
 			j.setLanceAngle(output[2]);
 			j.setX(x + output[0]);
@@ -133,7 +152,7 @@ public class TestGameJoust extends JFrame implements Runnable {
 		
 		for(Jouster j : jousters) {
 			bbg.setColor(Color.WHITE);
-			if(j.getFitness() == pop.getFittest() && pop.getFittest() != 0) {
+			if(j.getFitness() == pop.getFittest() && pop.getFittest() != 1) {
 				bbg.setColor(Color.red);
 			}
 			bbg.drawRect((int)j.getX(), (int)j.getY(), jousterLength, jousterLength);
@@ -160,7 +179,7 @@ public class TestGameJoust extends JFrame implements Runnable {
 				}
 			}
 			bbg.setColor(Color.gray);
-			bbg.drawLine(lanceOriginX, lanceOriginY, (int)closest.getX(), (int)closest.getY());
+			//bbg.drawLine(lanceOriginX, lanceOriginY, (int)closest.getX(), (int)closest.getY());
 		}
 		
 		g.drawImage(backbuffer, 0, 0, this);

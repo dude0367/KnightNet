@@ -3,7 +3,7 @@ package com.knight.knightnet;
 public class Agent {
 	private Genome genome;
 	protected double x, y;
-	protected double fitness;
+	protected double fitness = 1;
 	protected Population population;
 	
 	public Agent() {

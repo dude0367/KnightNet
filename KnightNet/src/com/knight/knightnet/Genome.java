@@ -29,8 +29,11 @@ public class Genome {
 		Genome[] out = new Genome[2];
 		g1.findWeights();
 		g2.findWeights();
+		int g1Weights = g1.weights.size();
+		int g2Weights = g2.weights.size();
+		if(g1Weights != g2Weights) System.out.println("Weights have different amount (" + g1Weights + ":" + g2Weights + ")");
 		if(Math.random() < g1.crossOverRate) {
-			int toSwitch = new Random().nextInt(g1.weights.size());
+			int toSwitch = new Random().nextInt(g1.weights.size() - 1);
 			ArrayList<Double> g1weights = new ArrayList<Double>();
 			ArrayList<Double> g2weights = new ArrayList<Double>();
 			for(int i = 0; i < toSwitch; i++) {
@@ -51,6 +54,8 @@ public class Genome {
 			out[0] = g1;
 			out[1] = g2;
 		}
+		g1.weights.clear();
+		g2.weights.clear();
 		return out;
 	}
 	

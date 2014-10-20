@@ -20,6 +20,9 @@ public class Neuron {
 				weights.put(n, (Math.random() - .5) * 2);//Random weight between -1 and 1
 			}
 		}
+		/*if(weights.size() != 3 && l.getPrevious() != null) {
+			System.out.println("Wrong number of weights");
+		}*/
 	}
 	
 	public double calcSigmoid(double activation) {

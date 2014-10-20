@@ -50,16 +50,13 @@ public class Network {
 	
 	public ArrayList<Neuron> getNeurons() {
 		ArrayList<Neuron> out = new ArrayList<Neuron>();
-		out.addAll(getNeurons(getFirstLayer()));
+		out.addAll(getNeurons(getFirstLayer()));//There is always 9 neurons (3 - 3 - 3 network)
 		return out;
 	}
 	
 	public ArrayList<Neuron> getNeurons(Layer l) {
 		ArrayList<Neuron> out = new ArrayList<Neuron>();
 		out.addAll(l.getNeurons());
-		/*for(Neuron n : l.getNeurons()) {
-			out.addAll(n.weights.keySet());
-		}*/
 		if(l.getNext() != null) {
 			out.addAll(getNeurons(l.getNext()));
 		}
