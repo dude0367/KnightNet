@@ -20,8 +20,14 @@ public class Genome {
 		network = new Network(hiddenLayers,inputNeurons, outputNeurons, neuronsPerLayer);
 	}
 	
-	public Genome(Genome g1, Genome g2) {
-		if(Math.random() < crossOverRate) {
+	public Genome(ArrayList<Double> weight, int inputNeurons, int outputNeurons) {
+		this(inputNeurons, outputNeurons);
+		network.populate(weight);
+	}
+	
+	public static Genome[] crossover(Genome g1, Genome g2) {
+		Genome[] out = new Genome[2];
+		if(Math.random() < g1.crossOverRate) {
 			int toSwitch = new Random().nextInt(g1.weights.size());
 			ArrayList<Double> g1weights = new ArrayList<Double>();
 			ArrayList<Double> g2weights = new ArrayList<Double>();
@@ -33,39 +39,22 @@ public class Genome {
 				g1weights.add(g1.weights.get(i));
 				g2weights.add(g2.weights.get(i));
 			}
-			//Make from crossed over
+			out[0] = new Genome(g1weights, g1.inputNeurons, g1.outputNeurons);
+			out[1] = new Genome(g2weights, g1.inputNeurons, g1.outputNeurons);
 		} else {
-			//TODO: CHANGE THIS SO IT MAKES 2 BABBIES
+			out[0] = g1;
+			out[1] = g2;
 		}
-	}
-	
-	public static Genome[] crossover(Genome g1, Genome g2) {
-		Genome[] out = new Genome[2];
-		
 		return out;
 	}
 	
 	public void findWeights() {
-		ArrayList<Neuron> neurons = getNeurons();
+		ArrayList<Neuron> neurons = network.getNeurons();
 		for(Neuron n : neurons) weights.addAll(n.weights.values());
 	}
 	
-	public ArrayList<Neuron> getNeurons() {
-		ArrayList<Neuron> out = new ArrayList<Neuron>();
-		out.addAll(getNeurons(network.getFirstLayer()));
-		return out;
-	}
-	
-	public ArrayList<Neuron> getNeurons(Layer l) {
-		ArrayList<Neuron> out = new ArrayList<Neuron>();
-		out.addAll(l.getNeurons());
-		/*for(Neuron n : l.getNeurons()) {
-			out.addAll(n.weights.keySet());
-		}*/
-		if(l.getNext() != null) {
-			out.addAll(getNeurons(l.getNext()));
-		}
-		return out;
+	public Network getNetwork() {
+		return network;
 	}
 
 }

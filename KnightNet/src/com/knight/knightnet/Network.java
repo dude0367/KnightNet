@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * This program is under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International
  * and no redistribution, commercial use, or modification can be made without contacting the program's developers.
  */
- //TEST AGAIN AGAIN AGAIN
+
 public class Network {
 	
 	private ArrayList<Layer> layers = new ArrayList<Layer>();
@@ -19,6 +19,16 @@ public class Network {
 			getLayers().add(last);
 		}
 		getLayers().add(new Layer(output, last, this));//Output layer
+	}
+	
+	public void populate(ArrayList<Double> weights) {
+		ArrayList<Neuron> neurons = getNeurons();
+		for(Neuron n : neurons) {
+			for(Neuron nn : n.weights.keySet()) {
+				n.weights.put(nn, weights.get(0));
+				weights.remove(0);
+			}
+		}
 	}
 	
 	public double[] process(double[] input) {
@@ -36,6 +46,24 @@ public class Network {
 
 	public void setLayers(ArrayList<Layer> layers) {
 		this.layers = layers;
+	}
+	
+	public ArrayList<Neuron> getNeurons() {
+		ArrayList<Neuron> out = new ArrayList<Neuron>();
+		out.addAll(getNeurons(getFirstLayer()));
+		return out;
+	}
+	
+	public ArrayList<Neuron> getNeurons(Layer l) {
+		ArrayList<Neuron> out = new ArrayList<Neuron>();
+		out.addAll(l.getNeurons());
+		/*for(Neuron n : l.getNeurons()) {
+			out.addAll(n.weights.keySet());
+		}*/
+		if(l.getNext() != null) {
+			out.addAll(getNeurons(l.getNext()));
+		}
+		return out;
 	}
 
 }
