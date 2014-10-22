@@ -1,7 +1,6 @@
 package com.knight.knightnet;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public class Population {
@@ -9,14 +8,18 @@ public class Population {
 	public ArrayList<Agent> population;// = new ArrayList<Agent>();
 	private double fittest = 1;
 
-	public Population(ArrayList agents) {
+	public Population(ArrayList<Agent> agents) {
 		population = agents;
+	}
+	
+	public Population() {
+		
 	}
 
 	public void evolve() {
 		fittest = 1;
 		ArrayList<Agent> nextGen = new ArrayList<Agent>();
-		for(int i = 0; i < population.size(); i++) {
+		for(int i = 0; i < population.size() / 2; i++) {
 			Agent agent1 = weightedRandom(population);
 			//population.remove(agent1);
 			Agent agent2 = agent1;//weightedRandom(population);
@@ -28,6 +31,7 @@ public class Population {
 			nextGen.add(baby1);
 			nextGen.add(baby2);
 		}
+		population.clear();
 		population = nextGen;
 	}
 
@@ -47,7 +51,7 @@ public class Population {
 		return null;
 	}
 	
-	public void setAgents(ArrayList agents) {
+	public void setAgents(ArrayList<Agent> agents) {
 		population = agents;
 	}
 

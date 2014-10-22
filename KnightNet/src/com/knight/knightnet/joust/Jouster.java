@@ -10,7 +10,7 @@ public class Jouster extends Agent {
 	
 	public Jouster(Population pop) {
 		super(pop);
-		setGenome(new Genome(3, 3));
+		setGenome(new Genome(3, 3, TestGameJoust.hiddenLayers, TestGameJoust.neuronsPerLayer));
 	}
 	
 	public Jouster(Agent a, Population pop) {

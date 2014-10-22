@@ -21,7 +21,7 @@ public class Player extends Agent {
 	
 	public Player(Population pop) {
 		super(pop);
-		setGenome(new Genome(6, 5));
+		setGenome(new Genome(6, 5, 4, 4));
 	}
 
 }

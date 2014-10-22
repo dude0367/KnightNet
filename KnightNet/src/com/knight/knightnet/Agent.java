@@ -15,7 +15,16 @@ public class Agent {
 	}
 	
 	public Agent(Genome g, Population pop) {
+		this(pop);
 		genome = g;
+	}
+	
+	public Agent(Agent a, Population pop) {
+		this(pop);
+		this.setGenome(a.getGenome());
+		this.setX(a.getX());
+		this.setY(a.getY());
+		this.fitness = a.getFitness();
 	}
 	
 	public Genome getGenome() {

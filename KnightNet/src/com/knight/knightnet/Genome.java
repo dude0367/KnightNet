@@ -5,23 +5,25 @@ import java.util.Random;
 
 public class Genome {
 	
-	protected int hiddenLayers = 2;
-	protected int neuronsPerLayer = 4;
+	protected int hiddenLayers = 1;
+	protected int neuronsPerLayer = 3;
 	protected int outputNeurons;
 	protected int inputNeurons;
 	protected Network network;
-	protected static double mutationRate = 0.01;
+	protected static double mutationRate = 0.1;
 	protected double crossOverRate = .7;
 	protected ArrayList<Double> weights = new ArrayList<Double>();
 	
-	public Genome(int inputNeurons, int outputNeurons) {
+	public Genome(int inputNeurons, int outputNeurons, int hiddenLayers, int neuronsPerLayer) {
 		this.outputNeurons = outputNeurons;
 		this.inputNeurons = inputNeurons;
+		this.hiddenLayers = hiddenLayers;
+		this.neuronsPerLayer = neuronsPerLayer;
 		network = new Network(hiddenLayers,inputNeurons, outputNeurons, neuronsPerLayer);
 	}
 	
-	public Genome(ArrayList<Double> weight, int inputNeurons, int outputNeurons) {
-		this(inputNeurons, outputNeurons);
+	public Genome(ArrayList<Double> weight, int inputNeurons, int outputNeurons, int hiddenLayers, int neuronsPerLayer) {
+		this(inputNeurons, outputNeurons, hiddenLayers, neuronsPerLayer);
 		network.populate(weight);
 	}
 	
@@ -48,8 +50,8 @@ public class Genome {
 				if(Math.random() > mutationRate) g2weights.add(g2.weights.get(i));
 				else g2weights.add(g2.weights.get(i) + (Math.random() - .5) * 2);
 			}
-			out[0] = new Genome(g1weights, g1.inputNeurons, g1.outputNeurons);
-			out[1] = new Genome(g2weights, g1.inputNeurons, g1.outputNeurons);
+			out[0] = new Genome(g1weights, g1.inputNeurons, g1.outputNeurons, g1.hiddenLayers, g1.neuronsPerLayer);
+			out[1] = new Genome(g2weights, g1.inputNeurons, g1.outputNeurons, g1.hiddenLayers, g1.neuronsPerLayer);
 		} else {
 			out[0] = g1;
 			out[1] = g2;

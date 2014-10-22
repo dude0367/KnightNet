@@ -11,10 +11,11 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 
 import com.knight.input.InputHandler;
+import com.knight.knightnet.Agent;
+import com.knight.knightnet.Genome;
 import com.knight.knightnet.Population;
 
 public class TestGameJoust extends JFrame implements Runnable {
-
 	
 	private static final long serialVersionUID = 1L;
 	public static TestGameJoust game;
@@ -23,14 +24,18 @@ public class TestGameJoust extends JFrame implements Runnable {
 	BufferedImage backbuffer;
 	
 	public int jousterCount = 10;
+	public static int hiddenLayers = 1;
+	public static int neuronsPerLayer = 4;
 	int jousterLength = 5;
-	int lanceLength = 10;
+	int lanceLength = 5;
 	public int ticks = 0;
+	int generations = 1;
 	int FPS = 30;
 	boolean speedmode = false;
 	InputHandler input;
 	
 	public ArrayList<Jouster> jousters = new ArrayList<Jouster>();
+	public ArrayList<Agent> agents = new ArrayList<Agent>();
 	Population pop;
 	
 	public void startgame() {
@@ -46,14 +51,16 @@ public class TestGameJoust extends JFrame implements Runnable {
 	
 	
 	public void run() {
-		pop = new Population(jousters);
+		pop = new Population(new ArrayList<Agent>());
 		for(int i = 0; i < jousterCount; i++) {
-			Jouster j = new Jouster(pop);
-			j.setX(game.getWidth() * Math.random());
-			j.setY(game.getHeight() * Math.random());
+			Agent a = new Agent(new Genome(3,3, hiddenLayers, neuronsPerLayer), pop);
+			a.setX(game.getWidth() * Math.random());
+			a.setY(game.getHeight() * Math.random());
+			Jouster j = new Jouster(a, pop);
 			jousters.add(j);
+			agents.add(a);
 		}
-		pop.setAgents(jousters);
+		pop.setAgents(agents);
 
 		long lastTime = System.currentTimeMillis();
 		long delta = System.currentTimeMillis() - lastTime;
@@ -76,9 +83,11 @@ public class TestGameJoust extends JFrame implements Runnable {
 	
 	void tick(long delta) {
 		if((ticks > 20 && input.getKey(KeyEvent.VK_SPACE)) || ticks > 6000) {
-			System.out.println("EVOLVING");
+			System.out.print("EVOLVING (CURRENTLY " + generations + " GENERATION), ");
 			System.out.println("PEAK FITNESS: " + pop.getFittest());
 			pop.evolve();
+			generations++;
+			//System.out.println("POPULATION EVOLVED");
 			jousters.clear();
 			for(int i = 0; i < jousterCount; i++) {
 				Jouster j = new Jouster(pop.population.get(i), pop);
@@ -148,8 +157,8 @@ public class TestGameJoust extends JFrame implements Runnable {
 			Point p = new Point();
 			p.setLocation(lanceX, lanceY);
 			if(new Rectangle((int)closest.getX(), (int)closest.getY(), jousterLength, jousterLength).contains(p)) {
-				j.changeFitness(.2);
-				closest.changeFitness(-.1);
+				j.changeFitness(5);
+				closest.changeFitness(-2.5);
 			}
 		}
 		ticks++;
@@ -191,7 +200,7 @@ public class TestGameJoust extends JFrame implements Runnable {
 				}
 			}
 			bbg.setColor(Color.gray);
-			//bbg.drawLine(lanceOriginX, lanceOriginY, (int)closest.getX(), (int)closest.getY());
+			bbg.drawLine(lanceOriginX, lanceOriginY, (int)closest.getX(), (int)closest.getY());
 		}
 		
 		g.drawImage(backbuffer, 0, 0, this);

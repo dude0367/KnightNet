@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import com.knight.knightnet.joust.TestGameJoust;
+import com.knight.knightnet.pong.Pong;
 
 /*(C) Copyright 2014-2015 dude0367 (Knight) & lkarinja (Karinja)
  * This program comes with absolutely no warranty.
@@ -61,6 +62,10 @@ public class KnightNet {
 							TestGameJoust game = new TestGameJoust();
 							game.startgame();
 							out = "Starting Joust game";
+						} else if(in.equalsIgnoreCase("game2") || in.equalsIgnoreCase("pong")) {
+							Pong game = new Pong();
+							game.startgame();
+							out = "Starting Pong game";
 						}
 
 						else {
