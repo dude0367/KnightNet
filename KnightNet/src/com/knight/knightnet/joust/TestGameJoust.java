@@ -27,6 +27,7 @@ public class TestGameJoust extends JFrame implements Runnable {
 	int lanceLength = 10;
 	public int ticks = 0;
 	int FPS = 30;
+	boolean speedmode = false;
 	InputHandler input;
 	
 	public ArrayList<Jouster> jousters = new ArrayList<Jouster>();
@@ -61,7 +62,7 @@ public class TestGameJoust extends JFrame implements Runnable {
 		while(running) {
 			delta = System.currentTimeMillis() - lastTime;
 			tick(delta);
-			draw();
+			if(!speedmode) draw();
 			time = (long) ((1000 / FPS) - (System.currentTimeMillis() - time));
 			lastTime = System.currentTimeMillis();
 			if (time > 0) { 
@@ -74,7 +75,7 @@ public class TestGameJoust extends JFrame implements Runnable {
 	}
 	
 	void tick(long delta) {
-		if(ticks > 20 && input.getKey(KeyEvent.VK_SPACE)) {
+		if((ticks > 20 && input.getKey(KeyEvent.VK_SPACE)) || ticks > 6000) {
 			System.out.println("EVOLVING");
 			System.out.println("PEAK FITNESS: " + pop.getFittest());
 			pop.evolve();
@@ -85,6 +86,14 @@ public class TestGameJoust extends JFrame implements Runnable {
 				j.setY(game.getHeight() * Math.random());
 				jousters.add(j);
 			}
+			ticks = 0;
+		}
+		if(ticks > 20 && !speedmode && input.getKey(KeyEvent.VK_ENTER)) {
+			speedmode = true;
+			ticks = 0;
+		}
+		if(speedmode && input.getKey(KeyEvent.VK_BACK_SLASH)) {
+			speedmode = false;
 			ticks = 0;
 		}
 		for(Jouster j : jousters) {
