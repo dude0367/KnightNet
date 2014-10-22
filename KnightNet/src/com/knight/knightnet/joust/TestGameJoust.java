@@ -59,9 +59,11 @@ public class TestGameJoust extends JFrame implements Runnable {
 		long time = System.currentTimeMillis();
 		
 		while(running) {
-			tick();
+			delta = System.currentTimeMillis() - lastTime;
+			tick(delta);
 			draw();
 			time = (long) ((1000 / FPS) - (System.currentTimeMillis() - time));
+			lastTime = System.currentTimeMillis();
 			if (time > 0) { 
 				try {
 					Thread.sleep(time); 
@@ -71,7 +73,7 @@ public class TestGameJoust extends JFrame implements Runnable {
 		}
 	}
 	
-	void tick() {
+	void tick(long delta) {
 		if(ticks > 20 && input.getKey(KeyEvent.VK_SPACE)) {
 			System.out.println("EVOLVING");
 			System.out.println("PEAK FITNESS: " + pop.getFittest());
@@ -113,8 +115,9 @@ public class TestGameJoust extends JFrame implements Runnable {
 			output[1] /= dist;
 			output[2] *= Math.PI * 2;
 			j.setLanceAngle(output[2]);
-			j.setX(x + output[0]);
-			j.setY(y + output[1]);
+			double mult = 0.1 * delta + 1;
+			j.setX(x + output[0] * mult);
+			j.setY(y + output[1] * mult);
 			if(j.getX() > this.getWidth()) {
 				j.setX(0);
 			}

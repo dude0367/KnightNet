@@ -5,8 +5,8 @@ import java.util.Random;
 
 public class Genome {
 	
-	protected int hiddenLayers = 1;
-	protected int neuronsPerLayer = 3;
+	protected int hiddenLayers = 2;
+	protected int neuronsPerLayer = 4;
 	protected int outputNeurons;
 	protected int inputNeurons;
 	protected Network network;
