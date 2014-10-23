@@ -82,11 +82,15 @@ public class TestGameJoust extends JFrame implements Runnable {
 	}
 	
 	void tick(long delta) {
-		if((ticks > 20 && input.getKey(KeyEvent.VK_SPACE)) || ticks > 6000) {
+		if((ticks > 20 && input.getKey(KeyEvent.VK_SPACE)) || ticks > 10000) {
 			System.out.print("EVOLVING (CURRENTLY " + generations + " GENERATION), ");
 			System.out.println("PEAK FITNESS: " + pop.getFittest());
 			pop.evolve();
 			generations++;
+			if(generations % 5 == 0) {
+				System.out.println("CLEANSING WEAK");
+				pop.cleanse();
+			}
 			//System.out.println("POPULATION EVOLVED");
 			jousters.clear();
 			for(int i = 0; i < jousterCount; i++) {
@@ -159,6 +163,9 @@ public class TestGameJoust extends JFrame implements Runnable {
 			if(new Rectangle((int)closest.getX(), (int)closest.getY(), jousterLength, jousterLength).contains(p)) {
 				j.changeFitness(5);
 				closest.changeFitness(-2.5);
+			}
+			if(j.getFitness() > 5 && !input.getKey(KeyEvent.VK_ENTER)) {
+				speedmode = false;
 			}
 		}
 		ticks++;

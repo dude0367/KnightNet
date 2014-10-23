@@ -36,12 +36,18 @@ public class Genome {
 		if(g1Weights != g2Weights) System.out.println("Weights have different amount (" + g1Weights + ":" + g2Weights + ")");
 		if(Math.random() < g1.crossOverRate) {
 			int toSwitch = new Random().nextInt(g1.weights.size() - 1);
+			double g1Fitness = 1;
+			double g2Fitness = 1;
 			ArrayList<Double> g1weights = new ArrayList<Double>();
 			ArrayList<Double> g2weights = new ArrayList<Double>();
 			for(int i = 0; i < toSwitch; i++) {
-				if(Math.random() > mutationRate) g1weights.add(g2.weights.get(i));
+				if(Math.random() > mutationRate) {
+					g1weights.add(g2.weights.get(i));
+				}
 				else g1weights.add(g2.weights.get(i) + (Math.random() - .5) * 2);
-				if(Math.random() > mutationRate) g2weights.add(g1.weights.get(i));
+				if(Math.random() > mutationRate) {
+					g2weights.add(g1.weights.get(i));
+				}
 				else g2weights.add(g1.weights.get(i) + (Math.random() - .5) * 2);
 			}
 			for(int i = toSwitch; i < g1.weights.size(); i++) {

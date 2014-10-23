@@ -34,7 +34,9 @@ public class Game {
 			int o = 1;
 			if(i == o) o--;
 			double[] output = paddles[i].getGenome().getNetwork().process(new double[] {
-					paddles[i].getY()-ball.getY(), Math.abs(paddles[i].getX() - ball.getX()), ball.getAngle(), ball.getSpeed()/*, paddles[o].getY()*/
+					paddles[i].getY()-ball.getY(), Math.abs(paddles[i].getX() - ball.getX()), 
+					/*ball.getAngle()*/Math.cos(ball.getAngle()) * ball.getSpeed() * delta, 
+					-1 * Math.sin(ball.getAngle()) * ball.getSpeed() * delta/*ball.getSpeed()*//*, paddles[o].getY()*/
 			});
 			output[0] -= .5;
 			output[0] *= delta * 4;
@@ -48,7 +50,7 @@ public class Game {
 		ball.setX(Pong.pong.getWidth()/2);
 		ball.setY(Pong.pong.getHeight()/2);
 		ball.setAngle(Math.random() * Math.PI * 2);
-		ball.setSpeed(.1);
+		ball.setSpeed(.5);
 	}
 
 }

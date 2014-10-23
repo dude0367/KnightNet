@@ -28,11 +28,29 @@ public class Population {
 			Genome[] babyGenomes = Genome.crossover(agent1.getGenome(), agent2.getGenome());
 			Agent baby1 = new Agent(babyGenomes[0], this);
 			Agent baby2 = new Agent(babyGenomes[1], this);
+			if(agent1.getGenome() == babyGenomes[0]) {
+				baby1.fitness = agent1.fitness;
+				baby2.fitness = agent2.fitness;
+			}
 			nextGen.add(baby1);
 			nextGen.add(baby2);
 		}
 		population.clear();
 		population = nextGen;
+	}
+	
+	public void cleanse() {
+		ArrayList<Agent> kill = new ArrayList<Agent>();
+		ArrayList<Agent> replacements = new ArrayList<Agent>();
+		for(Agent a : population) {
+			if(a.getFitness() > 1) continue;
+			Genome g = a.getGenome();
+			replacements.add(new Agent(new Genome(g.inputNeurons, g.outputNeurons, g.hiddenLayers, g.neuronsPerLayer), this));
+			//population.remove(a);
+			kill.add(a);
+		}
+		population.removeAll(kill);
+		population.addAll(replacements);
 	}
 
 	public Agent weightedRandom(ArrayList<Agent> pop) {
