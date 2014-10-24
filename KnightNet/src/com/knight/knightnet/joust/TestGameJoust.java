@@ -23,14 +23,15 @@ public class TestGameJoust extends JFrame implements Runnable {
 	public static boolean running = true;
 	BufferedImage backbuffer;
 	
-	public int jousterCount = 10;
+	public int jousterCount = 50;
 	public static int hiddenLayers = 1;
 	public static int neuronsPerLayer = 4;
 	int jousterLength = 5;
 	int lanceLength = 5;
 	public int ticks = 0;
 	int generations = 1;
-	int FPS = 30;
+	int FPS = 60;
+	int framesThisSecond = 0;
 	boolean speedmode = false;
 	InputHandler input;
 	
@@ -65,16 +66,23 @@ public class TestGameJoust extends JFrame implements Runnable {
 		long lastTime = System.currentTimeMillis();
 		long delta = System.currentTimeMillis() - lastTime;
 		long time = System.currentTimeMillis();
+		long lastSecond = time / 1000;
 		
 		while(running) {
 			delta = System.currentTimeMillis() - lastTime;
 			tick(delta);
 			if(!speedmode) draw();
-			time = (long) ((1000 / FPS) - (System.currentTimeMillis() - time));
+			framesThisSecond++;
+			time = (long) ((1000 / FPS) - (System.currentTimeMillis() - lastTime));
 			lastTime = System.currentTimeMillis();
+			if(lastSecond - lastTime / 1000 < 0) {
+				lastSecond = lastTime / 1000;
+				this.setTitle("KnightNet ANN Joust " + framesThisSecond + " FPS, APEX: " + pop.getFittest());
+				framesThisSecond = 0;
+			}
 			if (time > 0) { 
 				try {
-					Thread.sleep(time); 
+					if(!speedmode) Thread.sleep(time); 
 				} 
 				catch(Exception e){} 
 			}
@@ -147,9 +155,9 @@ public class TestGameJoust extends JFrame implements Runnable {
 				j.setX(this.getWidth());
 			}
 			if(j.getY() > this.getHeight()) {
-				j.setY(0);
+				j.setY(30);
 			}
-			if(j.getY() < 0) {
+			if(j.getY() < 30) {
 				j.setY(this.getHeight());
 			}
 			double lanceVecX = lanceLength * Math.cos(j.getLanceAngle()) + j.getX();
@@ -165,7 +173,7 @@ public class TestGameJoust extends JFrame implements Runnable {
 				closest.changeFitness(-2.5);
 			}
 			if(j.getFitness() > 5 && !input.getKey(KeyEvent.VK_ENTER)) {
-				speedmode = false;
+				//speedmode = false;
 			}
 		}
 		ticks++;
