@@ -2,6 +2,7 @@ package com.knight.knightnet.visualizer2d;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
@@ -43,23 +44,36 @@ public class Visualizer2D extends JFrame {
 		}
 		if(top == null) top = pop.population.get(0);
 		int layercount = top.getGenome().getNetwork().getLayers().size();
-		int spread = (this.getWidth() - 50) / layercount;
+		int spread = (this.getWidth() - 70) / (layercount - 1);
 		int x = 25;
 		int lastySpread = 0;
 		int width = 25;
 		int height = 25;
 		for(Layer l : top.getGenome().getNetwork().getLayers()) {
 			int neuroncount = l.getNeurons().size();
-			int yspread = (this.getHeight() - 50) / neuroncount;
-			int y = yspread / 3;
+			int yspread = (this.getHeight() - 70) / (neuroncount - 1);
+			int y = 35;
 			for(Neuron n : l.getNeurons()) {
-				bbg.drawRect(x, y, width, height);
+				boolean selected = false;
+				Point pos = this.getMousePosition();
+				if(pos != null) selected = pos.x < x + width && pos.y < y + height && pos.x > x && pos.y > y;
+				if(selected) {
+					bbg.fillRect(x, y, width, height);
+				}
+				else bbg.drawRect(x, y, width, height);
+				
 				if(l.getPrevious() != null) {
-					int tempY = lastySpread / 3;
+					int tempY = 35;
 					for(Neuron nn : l.getPrevious().getNeurons()) {
-						bbg.drawLine(x - spread + width, tempY + height/2, x, y + height/2);
-						bbg.setColor(Color.red);
-						bbg.drawString("" + n.getWeights().get(nn), x - spread/2, (y-tempY)/2);
+						if(selected) {
+							bbg.setColor(Color.red);
+							bbg.drawLine(x - spread + width, tempY + height/2, x, y + height/2);
+							bbg.setColor(Color.ORANGE);
+							bbg.drawString("" + n.getWeights().get(nn), x - (spread)/2 - 5, y - (y-tempY)/2 + 10);
+						} else {
+							bbg.drawLine(x - spread + width, tempY + height/2, x, y + height/2);
+						}
+						bbg.setColor(Color.white);
 						tempY += lastySpread;
 					}
 				}

@@ -112,6 +112,7 @@ public class TestGameJoust extends JFrame implements Runnable {
 			ticks = 0;
 			if(vis2d != null) {
 				vis2d.setPop(pop);
+				vis2d.draw();
 			}
 		}
 		if(ticks > 20 && !speedmode && input.getKey(KeyEvent.VK_ENTER)) {
@@ -124,6 +125,7 @@ public class TestGameJoust extends JFrame implements Runnable {
 		}
 		if(input.getKey(KeyEvent.VK_P) && (vis2d == null || !vis2d.isVisible())) {
 			vis2d = new Visualizer2D(pop);
+			vis2d.draw();
 		}
 		for(Jouster j : jousters) {
 			double x = j.getX();
@@ -184,7 +186,9 @@ public class TestGameJoust extends JFrame implements Runnable {
 				//speedmode = false;
 			}
 		}
-		if(vis2d != null) vis2d.draw();
+		if(!speedmode && vis2d != null) {
+			vis2d.draw();
+		}
 		ticks++;
 	}
 	
