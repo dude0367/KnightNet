@@ -1,9 +1,11 @@
-package com.knight.knightnet;
+package com.knight.knightnet.gamecore;
+
+import com.knight.knightnet.network.Population;
 
 public class Agent {
 	private Genome genome;
 	protected double x, y;
-	protected double fitness = 1;
+	private double fitness = 1;
 	protected Population population;
 	
 	public Agent() {
@@ -24,7 +26,7 @@ public class Agent {
 		this.setGenome(a.getGenome());
 		this.setX(a.getX());
 		this.setY(a.getY());
-		this.fitness = a.getFitness();
+		this.setFitness(a.getFitness());
 	}
 	
 	public Genome getGenome() {
@@ -51,9 +53,9 @@ public class Agent {
 	}
 	
 	public void changeFitness(double delta) {
-		fitness += delta;
-		if(fitness > getPopulation().getFittest()) {
-			getPopulation().setFittest(fitness);
+		setFitness(getFitness() + delta);
+		if(getFitness() > getPopulation().getFittest()) {
+			getPopulation().setFittest(getFitness());
 		}
 	}
 	
@@ -67,6 +69,10 @@ public class Agent {
 
 	public void setPopulation(Population population) {
 		this.population = population;
+	}
+
+	public void setFitness(double fitness) {
+		this.fitness = fitness;
 	}
 
 }

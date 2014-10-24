@@ -1,8 +1,8 @@
 package com.knight.knightnet.joust;
 
-import com.knight.knightnet.Agent;
-import com.knight.knightnet.Genome;
-import com.knight.knightnet.Population;
+import com.knight.knightnet.gamecore.Agent;
+import com.knight.knightnet.gamecore.Genome;
+import com.knight.knightnet.network.Population;
 
 public class Jouster extends Agent {
 	
@@ -18,7 +18,7 @@ public class Jouster extends Agent {
 		this.setGenome(a.getGenome());
 		this.setX(a.getX());
 		this.setY(a.getY());
-		this.fitness = a.getFitness();
+		this.setFitness(a.getFitness());
 	}
 	
 	public double getLanceAngle() {

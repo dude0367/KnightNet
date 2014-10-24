@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 
 import com.knight.input.InputHandler;
-import com.knight.knightnet.Agent;
-import com.knight.knightnet.Genome;
-import com.knight.knightnet.Population;
+import com.knight.knightnet.gamecore.Agent;
+import com.knight.knightnet.gamecore.Genome;
+import com.knight.knightnet.network.Population;
 
 public class Pong extends JFrame implements Runnable {
 

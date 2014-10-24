@@ -11,9 +11,10 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 
 import com.knight.input.InputHandler;
-import com.knight.knightnet.Agent;
-import com.knight.knightnet.Genome;
-import com.knight.knightnet.Population;
+import com.knight.knightnet.gamecore.Agent;
+import com.knight.knightnet.gamecore.Genome;
+import com.knight.knightnet.network.Population;
+import com.knight.knightnet.visualizer2d.Visualizer2D;
 
 public class TestGameJoust extends JFrame implements Runnable {
 	
@@ -38,6 +39,7 @@ public class TestGameJoust extends JFrame implements Runnable {
 	public ArrayList<Jouster> jousters = new ArrayList<Jouster>();
 	public ArrayList<Agent> agents = new ArrayList<Agent>();
 	Population pop;
+	Visualizer2D vis2d;
 	
 	public void startgame() {
 		game = this;
@@ -108,6 +110,9 @@ public class TestGameJoust extends JFrame implements Runnable {
 				jousters.add(j);
 			}
 			ticks = 0;
+			if(vis2d != null) {
+				vis2d.setPop(pop);
+			}
 		}
 		if(ticks > 20 && !speedmode && input.getKey(KeyEvent.VK_ENTER)) {
 			speedmode = true;
@@ -116,6 +121,9 @@ public class TestGameJoust extends JFrame implements Runnable {
 		if(speedmode && input.getKey(KeyEvent.VK_BACK_SLASH)) {
 			speedmode = false;
 			ticks = 0;
+		}
+		if(input.getKey(KeyEvent.VK_P) && (vis2d == null || !vis2d.isVisible())) {
+			vis2d = new Visualizer2D(pop);
 		}
 		for(Jouster j : jousters) {
 			double x = j.getX();
@@ -176,6 +184,7 @@ public class TestGameJoust extends JFrame implements Runnable {
 				//speedmode = false;
 			}
 		}
+		if(vis2d != null) vis2d.draw();
 		ticks++;
 	}
 	
