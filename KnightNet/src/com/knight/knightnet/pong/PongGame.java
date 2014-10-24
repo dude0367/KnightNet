@@ -3,12 +3,12 @@ package com.knight.knightnet.pong;
 import com.knight.knightnet.gamecore.Agent;
 import com.knight.knightnet.network.Population;
 
-public class Game {
+public class PongGame {
 	
 	Ball ball;
 	Paddle[] paddles = new Paddle[2];
 	
-	public Game(Agent a, Agent b, Population p) {
+	public PongGame(Agent a, Agent b, Population p) {
 		paddles[0] = new Paddle(a, p);
 		paddles[0].setX(5);
 		paddles[1] = new Paddle(b, p);

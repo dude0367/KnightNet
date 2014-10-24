@@ -144,8 +144,11 @@ public class TestGameJoust extends JFrame implements Runnable {
 					}
 				}
 			}
+			double xDiff = x - closest.getX();
+			double yDiff = y - closest.getY();
+			dist = 1;//DON'T NORMALIZE, THEY SHOULD KNOW HOW FAR THEIR TARGET IS
 			double[] output = j.getGenome().getNetwork().process(new double[] {
-					x - closest.getX(), y - closest.getY(), j.getLanceAngle()
+					xDiff/dist, yDiff/dist, j.getLanceAngle()
 			});
 			output[0] -= .5;
 			output[1] -= .5;
