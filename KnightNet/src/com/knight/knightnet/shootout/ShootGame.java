@@ -56,14 +56,14 @@ public class ShootGame {
 			}
 		}
 		
-		Tank t = players[0];
-		Tank ot = players[0];
+		Tank t = players[0];//Shooter
+		Tank ot = players[1];//Not shooter
 		ArrayList<Bullet> toRemove = new ArrayList<Bullet>();
 		for(Bullet b : getBullets()) {
 			if(b.getShooter() == t && t == players[0]) {
 				t = players[1];
 				ot = players[0];
-			} else if(b.getShooter() == t && t == players[1]) {
+			} else/* if(b.getShooter() == t && t == players[1])*/ {
 				t = players[0];
 				ot = players[1];
 			}
@@ -81,8 +81,8 @@ public class ShootGame {
 				double dist = Math.sqrt(Math.pow(b.getX() - t.getX(), 2) + Math.pow(b.getY() - t.getY(), 2));
 				if(t != b.getShooter() && dist <= t.getColliderDist()) {
 					toRemove.add(b);
+					t.changeFitness(-1);
 					ot.changeFitness(5);
-					t.changeDirection(-1);
 				}
 			}
 		}
