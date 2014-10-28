@@ -1,4 +1,4 @@
-package com.knight.knightnet;
+package com.knight.knightnet.network;
 import java.util.HashMap;
 
 /*(C) Copyright 2014-2015 dude0367 (Knight) & lkarinja (Karinja)
@@ -23,6 +23,10 @@ public class Neuron {
 		/*if(weights.size() != 3 && l.getPrevious() != null) {
 			System.out.println("Wrong number of weights");
 		}*/
+	}
+	
+	public HashMap<Neuron, Double> getWeights() {
+		return weights;
 	}
 	
 	public double calcSigmoid(double activation) {

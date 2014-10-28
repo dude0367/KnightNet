@@ -1,24 +1,27 @@
-package com.knight.knightnet;
+package com.knight.knightnet.gamecore;
 
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.knight.knightnet.network.Network;
+import com.knight.knightnet.network.Neuron;
+
 public class Genome {
 	
-	protected int hiddenLayers = 1;
-	protected int neuronsPerLayer = 3;
-	protected int outputNeurons;
-	protected int inputNeurons;
+	private int hiddenLayers = 1;
+	private int neuronsPerLayer = 3;
+	private int outputNeurons;
+	private int inputNeurons;
 	protected Network network;
 	protected static double mutationRate = 0.1;
 	protected double crossOverRate = .7;
 	protected ArrayList<Double> weights = new ArrayList<Double>();
 	
 	public Genome(int inputNeurons, int outputNeurons, int hiddenLayers, int neuronsPerLayer) {
-		this.outputNeurons = outputNeurons;
-		this.inputNeurons = inputNeurons;
-		this.hiddenLayers = hiddenLayers;
-		this.neuronsPerLayer = neuronsPerLayer;
+		this.setOutputNeurons(outputNeurons);
+		this.setInputNeurons(inputNeurons);
+		this.setHiddenLayers(hiddenLayers);
+		this.setNeuronsPerLayer(neuronsPerLayer);
 		network = new Network(hiddenLayers,inputNeurons, outputNeurons, neuronsPerLayer);
 	}
 	
@@ -56,8 +59,8 @@ public class Genome {
 				if(Math.random() > mutationRate) g2weights.add(g2.weights.get(i));
 				else g2weights.add(g2.weights.get(i) + (Math.random() - .5) * 2);
 			}
-			out[0] = new Genome(g1weights, g1.inputNeurons, g1.outputNeurons, g1.hiddenLayers, g1.neuronsPerLayer);
-			out[1] = new Genome(g2weights, g1.inputNeurons, g1.outputNeurons, g1.hiddenLayers, g1.neuronsPerLayer);
+			out[0] = new Genome(g1weights, g1.getInputNeurons(), g1.getOutputNeurons(), g1.getHiddenLayers(), g1.getNeuronsPerLayer());
+			out[1] = new Genome(g2weights, g1.getInputNeurons(), g1.getOutputNeurons(), g1.getHiddenLayers(), g1.getNeuronsPerLayer());
 		} else {
 			out[0] = g1;
 			out[1] = g2;
@@ -69,11 +72,43 @@ public class Genome {
 	
 	public void findWeights() {
 		ArrayList<Neuron> neurons = network.getNeurons();
-		for(Neuron n : neurons) weights.addAll(n.weights.values());
+		for(Neuron n : neurons) weights.addAll(n.getWeights().values());
 	}
 	
 	public Network getNetwork() {
 		return network;
+	}
+
+	public int getInputNeurons() {
+		return inputNeurons;
+	}
+
+	public void setInputNeurons(int inputNeurons) {
+		this.inputNeurons = inputNeurons;
+	}
+
+	public int getOutputNeurons() {
+		return outputNeurons;
+	}
+
+	public void setOutputNeurons(int outputNeurons) {
+		this.outputNeurons = outputNeurons;
+	}
+
+	public int getHiddenLayers() {
+		return hiddenLayers;
+	}
+
+	public void setHiddenLayers(int hiddenLayers) {
+		this.hiddenLayers = hiddenLayers;
+	}
+
+	public int getNeuronsPerLayer() {
+		return neuronsPerLayer;
+	}
+
+	public void setNeuronsPerLayer(int neuronsPerLayer) {
+		this.neuronsPerLayer = neuronsPerLayer;
 	}
 
 }

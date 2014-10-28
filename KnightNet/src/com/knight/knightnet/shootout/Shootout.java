@@ -1,0 +1,147 @@
+package com.knight.knightnet.shootout;
+
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
+import javax.swing.JFrame;
+
+import com.knight.input.InputHandler;
+import com.knight.knightnet.gamecore.Agent;
+import com.knight.knightnet.gamecore.Genome;
+import com.knight.knightnet.network.Population;
+
+public class Shootout extends JFrame implements Runnable {
+
+	private static final long serialVersionUID = 1L;
+	private boolean speedmode = false;
+	public static Shootout shootout;
+	public static Thread thread;
+	BufferedImage backbuffer;
+	static int FPS = 30;
+	int framesThisSecond = 0;
+	int inputDelay = 0;
+	InputHandler input;
+	boolean running = true;
+	
+	ArrayList<ShootGame> games = new ArrayList<ShootGame>();
+	ArrayList<Agent> agents = new ArrayList<Agent>();
+	Population pop;
+	ShootGame spectating;
+	int spectatingIndex = 0;
+	double cornerAngle = 0;
+	
+	public void startgame() {
+		this.setSize(800,600);
+		this.setVisible(true);
+		this.setTitle("AI Shootout: 0");
+		thread = new Thread(this);
+		input = new InputHandler(this);
+		thread.start();
+		shootout = this;
+	}
+
+	@Override
+	public void run() {
+		pop = new Population();
+		for(int i = 0; i < 50; i++) {
+			Agent a = new Agent(pop);
+			a.setGenome(new Genome(6, 3, 4, 6));
+			Agent b = new Agent(pop);
+			b.setGenome(new Genome(6, 3, 4, 6));
+			agents.add(a);
+			agents.add(b);
+			games.add(new ShootGame(a,b, pop));
+		}
+		spectating = games.get(0);
+
+		long lastTime = System.currentTimeMillis();
+		long delta = System.currentTimeMillis() - lastTime;
+		long time = System.currentTimeMillis();
+		long lastSecond = time / 1000;
+		while(running) {
+			delta = System.currentTimeMillis() - lastTime;
+			tick(delta);
+			if(!speedmode) draw();
+			framesThisSecond++;
+			time = (long) ((1000 / FPS) - (System.currentTimeMillis() - lastTime));
+			lastTime = System.currentTimeMillis();
+			if(lastSecond - lastTime / 1000 < 0) {
+				lastSecond = lastTime / 1000;
+				this.setTitle("AI Shootout " + framesThisSecond + " FPS, APEX: " + pop.getFittest() + " (" + spectatingIndex + ")");
+				framesThisSecond = 0;
+			}
+			if (time > 0) { 
+				try {
+					if(!speedmode) Thread.sleep(time); 
+				} 
+				catch(Exception e){} 
+			}
+		}
+	}
+	
+	private void tick(long delta) {
+		if(delta == 0) delta = 1;
+		inputDelay++;
+		for(ShootGame g : games) {
+			g.tick(delta);
+		}
+		
+		if(input.getKey(KeyEvent.VK_RIGHT) && inputDelay > 40) {
+			spectatingIndex++;
+			if(spectatingIndex >= games.size()) spectatingIndex = 0;
+			spectating = games.get(spectatingIndex);
+			inputDelay = 0;
+			//this.setTitle("AI Shootout: " + spectatingIndex);
+		}
+		if(input.getKey(KeyEvent.VK_LEFT) && inputDelay > 40) {
+			spectatingIndex--;
+			if(spectatingIndex < 0) spectatingIndex = games.size() - 1;
+			spectating = games.get(spectatingIndex);
+			inputDelay = 0;
+			//this.setTitle("AI Shootout: " + spectatingIndex);
+		}
+	}
+	
+	private void draw() {
+		if(backbuffer == null) backbuffer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		if(backbuffer.getWidth() != getWidth() || backbuffer.getHeight() != getHeight()) backbuffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+		Graphics g = getGraphics();
+		Graphics bbg = backbuffer.getGraphics();
+		bbg.clearRect(0, 0, getWidth(), getHeight());
+		
+		bbg.drawLine(getWidth() / 2, 0, getWidth() / 2, getHeight());
+		drawTank(spectating.getPlayers()[0], bbg);
+		drawTank(spectating.getPlayers()[1], bbg);
+		
+		for(Bullet b : spectating.getBullets()) {
+			bbg.fillOval((int)(b.getX()-2.5), (int)(b.getY()-2.5), 5, 5);
+		}
+		
+		g.drawImage(backbuffer, 0, 0, this);
+	}
+	
+	private void drawTank(Tank t, Graphics g) {
+		int x = (int) t.getX();
+		int y = (int) t.getY();
+		int xShift = Tank.width / 2;
+		int yShift = Tank.height /2;
+		double angle = t.getDirection();
+		if(cornerAngle == 0) cornerAngle = Math.atan(Tank.height / Tank.width);
+		Point a = new Point(), b = new Point(), c = new Point(), d = new Point(), e = new Point();
+		a.setLocation(x + xShift * Math.cos(cornerAngle + angle), y + yShift * Math.sin(cornerAngle + angle));
+		d.setLocation(x + xShift * Math.cos(cornerAngle + angle + Math.PI/2), y + yShift * Math.sin(cornerAngle + angle + Math.PI/2));
+		c.setLocation(x + xShift * Math.cos(cornerAngle + angle + Math.PI), y + yShift * Math.sin(cornerAngle + angle + Math.PI));
+		b.setLocation(x + xShift * Math.cos(cornerAngle + angle + 3*(Math.PI/2)), y + yShift * Math.sin(cornerAngle + angle + (Math.PI/2) * 3));
+		e.setLocation(x + Tank.barrelLength * Math.cos(angle), y + Tank.barrelLength * Math.sin(angle));
+		g.drawLine(a.x, a.y, b.x, b.y);
+		g.drawLine(b.x, b.y, c.x, c.y);
+		g.drawLine(c.x, c.y, d.x, d.y);
+		g.drawLine(d.x, d.y, a.x, a.y);
+		g.drawLine(x, y, e.x, e.y);
+		g.drawString(t.getFitness() + "", x - 5, y - 5);
+	}
+
+}

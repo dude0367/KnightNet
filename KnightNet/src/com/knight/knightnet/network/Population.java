@@ -1,7 +1,10 @@
-package com.knight.knightnet;
+package com.knight.knightnet.network;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import com.knight.knightnet.gamecore.Agent;
+import com.knight.knightnet.gamecore.Genome;
 
 public class Population {
 
@@ -29,8 +32,8 @@ public class Population {
 			Agent baby1 = new Agent(babyGenomes[0], this);
 			Agent baby2 = new Agent(babyGenomes[1], this);
 			if(agent1.getGenome() == babyGenomes[0]) {
-				baby1.fitness = agent1.fitness;
-				baby2.fitness = agent2.fitness;
+				baby1.setFitness(agent1.getFitness());
+				baby2.setFitness(agent2.getFitness());
 			}
 			nextGen.add(baby1);
 			nextGen.add(baby2);
@@ -45,7 +48,7 @@ public class Population {
 		for(Agent a : population) {
 			if(a.getFitness() > 1) continue;
 			Genome g = a.getGenome();
-			replacements.add(new Agent(new Genome(g.inputNeurons, g.outputNeurons, g.hiddenLayers, g.neuronsPerLayer), this));
+			replacements.add(new Agent(new Genome(g.getInputNeurons(), g.getOutputNeurons(), g.getHiddenLayers(), g.getNeuronsPerLayer()), this));
 			//population.remove(a);
 			kill.add(a);
 		}
@@ -56,12 +59,12 @@ public class Population {
 	public Agent weightedRandom(ArrayList<Agent> pop) {
 		double sum = 0;
 		for(Agent a : population) {
-			sum += a.fitness;
+			sum += a.getFitness();
 		}
 		double rand = new Random().nextDouble() * sum;
 		for(Agent t : pop) {
 			Agent a = (Agent) t;
-			rand -= a.fitness;
+			rand -= a.getFitness();
 			if(rand <= 0) {
 				return a;
 			}

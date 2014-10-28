@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 
 import com.knight.input.InputHandler;
-import com.knight.knightnet.Agent;
-import com.knight.knightnet.Genome;
-import com.knight.knightnet.Population;
+import com.knight.knightnet.gamecore.Agent;
+import com.knight.knightnet.gamecore.Genome;
+import com.knight.knightnet.network.Population;
 
 public class Pong extends JFrame implements Runnable {
 
@@ -23,10 +23,10 @@ public class Pong extends JFrame implements Runnable {
 	InputHandler input;
 	boolean running = true;
 	
-	ArrayList<Game> games = new ArrayList<Game>();
+	ArrayList<PongGame> games = new ArrayList<PongGame>();
 	ArrayList<Agent> agents = new ArrayList<Agent>();
 	Population pop;
-	Game spectating;
+	PongGame spectating;
 	int spectatingIndex = 0;
 
 	public void startgame() {
@@ -49,7 +49,7 @@ public class Pong extends JFrame implements Runnable {
 			b.setGenome(new Genome(4, 1, 4, 6));
 			agents.add(a);
 			agents.add(b);
-			games.add(new Game(a,b, pop));
+			games.add(new PongGame(a,b, pop));
 		}
 		spectating = games.get(0);
 		
@@ -75,7 +75,7 @@ public class Pong extends JFrame implements Runnable {
 	private void tick(long delta) {
 		if(delta == 0) delta = 1;
 		inputDelay++;
-		for(Game g : games) {
+		for(PongGame g : games) {
 			g.tick(delta);
 		}
 		

@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import com.knight.knightnet.joust.TestGameJoust;
+import com.knight.knightnet.network.Network;
 import com.knight.knightnet.pong.Pong;
+import com.knight.knightnet.shootout.Shootout;
 
 /*(C) Copyright 2014-2015 dude0367 (Knight) & lkarinja (Karinja)
  * This program comes with absolutely no warranty.
@@ -17,6 +19,10 @@ public class KnightNet {
 
 	//Backpropagation guide: http://home.agh.edu.pl/~vlsi/AI/backp_t_en/backprop.html
 	//Basic ANN guide: http://www.ai-junkie.com/ann/evolved/nnt1.html
+	
+	static Pong ponggame;
+	static TestGameJoust joustgame;
+	static Shootout shootgame;
 
 	public static void main(String args[]) {//ENTRY POINT TO TEST NETWORK
 		Network network = new Network(1, 2, 2, 3);/*Create network with 1 hidden layer, 
@@ -53,24 +59,26 @@ public class KnightNet {
 				if(in.equalsIgnoreCase("end") || in.equalsIgnoreCase("stop")) {
 					System.out.println("Bye");
 					running = false;
-				} else
-					if(in.equalsIgnoreCase("reset") || in.equalsIgnoreCase("restart")) {
-						network = new Network(1, 2, 2, 3);
-						out = "Reset";
-					} else
-						if(in.equalsIgnoreCase("game1") || in.equalsIgnoreCase("joust")) {
-							TestGameJoust game = new TestGameJoust();
-							game.startgame();
-							out = "Starting Joust game";
-						} else if(in.equalsIgnoreCase("game2") || in.equalsIgnoreCase("pong")) {
-							Pong game = new Pong();
-							game.startgame();
-							out = "Starting Pong game";
-						}
+				} else if(in.equalsIgnoreCase("reset") || in.equalsIgnoreCase("restart")) {
+					network = new Network(1, 2, 2, 3);
+					out = "Reset";
+				} else if(in.equalsIgnoreCase("game1") || in.equalsIgnoreCase("joust")) {
+					joustgame = new TestGameJoust();
+					joustgame.startgame();
+					out = "Starting Joust game";
+				} else if(in.equalsIgnoreCase("game2") || in.equalsIgnoreCase("pong")) {
+					ponggame = new Pong();
+					ponggame.startgame();
+					out = "Starting Pong game";
+				} if(in.equalsIgnoreCase("game3") || in.equalsIgnoreCase("shoot")) {
+					shootgame = new Shootout();
+					shootgame.startgame();
+					out = "Starting Shootout game";
+				}
 
-						else {
-							out = "Invalid input";
-						}
+				else {
+					out = "Invalid input";
+				}
 			}
 		}
 	}

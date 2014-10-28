@@ -1,7 +1,7 @@
 package com.knight.knightnet.pong;
 
-import com.knight.knightnet.Agent;
-import com.knight.knightnet.Population;
+import com.knight.knightnet.gamecore.Agent;
+import com.knight.knightnet.network.Population;
 
 public class Paddle extends Agent {
 	

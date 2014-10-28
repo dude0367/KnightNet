@@ -1,4 +1,4 @@
-package com.knight.knightnet;
+package com.knight.knightnet.network;
 import java.util.ArrayList;
 
 /*(C) Copyright 2014-2015 dude0367 (Knight) & lkarinja (Karinja)
