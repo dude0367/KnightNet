@@ -12,6 +12,7 @@ public class Tank extends Agent {
 	
 	private double direction = 0;
 	private double colliderDist = 0;
+	private double cannonCooldown = 0;
 	
 	public Tank(Agent a, Population pop) {
 		super(a, pop);
@@ -30,7 +31,7 @@ public class Tank extends Agent {
 	}
 
 	public Bullet fire() {
-		this.changeFitness(-.1);
+		//this.changeFitness(-.1);
 		Bullet b = new Bullet();
 		b.setShooter(this);
 		b.setAngle(direction);
@@ -47,6 +48,18 @@ public class Tank extends Agent {
 
 	public void setColliderDist(double colliderDist) {
 		this.colliderDist = colliderDist;
+	}
+
+	public double getCannonCooldown() {
+		return cannonCooldown;
+	}
+
+	public void setCannonCooldown(double cannonCooldown) {
+		this.cannonCooldown = cannonCooldown;
+	}
+	
+	public void coolCannon(double cool) {
+		this.cannonCooldown -= cool;
 	}
 
 }

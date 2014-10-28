@@ -2,15 +2,15 @@ package com.knight.knightnet.visualizer;
 
 import javax.swing.JFrame;
 
-public class Visualizer extends JFrame {
+/*public class Visualizer extends JFrame {
 	
 	public Visualizer() {
 		
 	}
 
-}
+}*/
 //TEST
-/*import java.awt.*;
+import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
@@ -31,20 +31,20 @@ import javax.swing.*;
 //http://stackoverflow.com/questions/701504/perspective-projection-help-a-noob
 
 //http://www.dreamincode.net/forums/topic/239174-3d-perspective-projection/ <-Very helpful
-public class Engine extends JFrame{
+public class Visualizer extends JFrame{
 	private static final long serialVersionUID = 2615177480997284514L;
 	public static final int height=600;
 	public static final int width=800;
 	public static final double H=100;
 	public static final double L=100;
-	public static Engine engine;
+	public static Visualizer engine;
 	public static Calc calc;
 	public static Vector<Double> camera;
 	public static double rot=0;
 	public static Vector<Double> view;
 	public static Vector<Double> viewpoint;
 	public static Prism P;
-	Engine(){
+	Visualizer(){
 		super("Engine");
 		setSize(width,height);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -225,7 +225,7 @@ public class Engine extends JFrame{
 		camera=new Vector<Double>(200.0,200.0,200.0);
 		viewpoint=new Vector<Double>(200.0,200.0,200.0);
 		view=new Vector<Double>(0.0,0.0,0.0);
-		engine=new Engine();
+		engine=new Visualizer();
 	}
 	public Prism create(Vector<Double> vert1,Vector<Double> vert2,Vector<Double> vert3,Vector<Double> vert4,Vector<Double> vert5,Vector<Double> vert6,Vector<Double> vert7,Vector<Double> vert8){
 		Side s1,s2,s3,s4,s5,s6;
@@ -332,7 +332,7 @@ class Prism{
 		return s;
 	}
 }
-class Calc extends Engine{
+class Calc extends Visualizer{
 	Calc(){
 	}
 	public Vector<Double> to2D(Vector<Double> point, Vector<Double> camera, Vector<Double> viewAngle, Vector<Double> viewpoint){

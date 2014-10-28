@@ -1,5 +1,6 @@
 package com.knight.knightnet.shootout;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -22,6 +23,7 @@ public class Shootout extends JFrame implements Runnable {
 	BufferedImage backbuffer;
 	static int FPS = 30;
 	int framesThisSecond = 0;
+	int lastFPS = 0;
 	int inputDelay = 0;
 	InputHandler input;
 	boolean running = true;
@@ -50,14 +52,15 @@ public class Shootout extends JFrame implements Runnable {
 		pop = new Population();
 		for(int i = 0; i < 50; i++) {
 			Agent a = new Agent(pop);
-			a.setGenome(new Genome(6, 3, 4, 6));
+			a.setGenome(new Genome(/*6*/4, 3, 3, 6));
 			Agent b = new Agent(pop);
-			b.setGenome(new Genome(6, 3, 4, 6));
+			b.setGenome(new Genome(4, 3, 3, 6));
 			agents.add(a);
 			agents.add(b);
 			games.add(new ShootGame(a,b, pop));
 		}
 		spectating = games.get(0);
+		pop.setAgents(agents);
 
 		long lastTime = System.currentTimeMillis();
 		long delta = System.currentTimeMillis() - lastTime;
@@ -72,7 +75,8 @@ public class Shootout extends JFrame implements Runnable {
 			lastTime = System.currentTimeMillis();
 			if(lastSecond - lastTime / 1000 < 0) {
 				lastSecond = lastTime / 1000;
-				this.setTitle("AI Shootout " + framesThisSecond + " FPS, APEX: " + pop.getFittest() + " (" + spectatingIndex + ")");
+				writeTitle();
+				lastFPS = framesThisSecond;
 				framesThisSecond = 0;
 			}
 			if (time > 0) { 
@@ -84,18 +88,22 @@ public class Shootout extends JFrame implements Runnable {
 		}
 	}
 	
+	private void writeTitle() {
+		this.setTitle("AI Shootout " + lastFPS + " FPS, APEX: " + pop.getFittest() + " (" + spectatingIndex + ")");
+	}
+
 	private void tick(long delta) {
 		if(delta == 0) delta = 1;
 		ticks++;
 		if(ticks > 1000) {
 			System.out.print("EVOLVING (CURRENTLY " + generations + " GENERATION), ");
 			System.out.println("PEAK FITNESS: " + pop.getFittest());
-			pop.evolve();
 			generations++;
 			if(generations % 5 == 0) {
 				System.out.println("CLEANSING WEAK");
 				pop.cleanse();
 			}
+			pop.evolve();
 			int size = games.size();
 			games.clear();
 			for(int i = 0; i < size * 2; i+=2) {
@@ -109,6 +117,8 @@ public class Shootout extends JFrame implements Runnable {
 				});
 				i += 2;
 			}*/
+			ticks = 0;
+			spectating = games.get(spectatingIndex);
 		}
 		
 		inputDelay++;
@@ -116,19 +126,19 @@ public class Shootout extends JFrame implements Runnable {
 			g.tick(delta);
 		}
 		
-		if(input.getKey(KeyEvent.VK_RIGHT) && inputDelay > 40) {
+		if(input.getKey(KeyEvent.VK_RIGHT) && inputDelay > 20) {
 			spectatingIndex++;
 			if(spectatingIndex >= games.size()) spectatingIndex = 0;
 			spectating = games.get(spectatingIndex);
 			inputDelay = 0;
-			//this.setTitle("AI Shootout: " + spectatingIndex);
+			writeTitle();
 		}
-		if(input.getKey(KeyEvent.VK_LEFT) && inputDelay > 40) {
+		if(input.getKey(KeyEvent.VK_LEFT) && inputDelay > 20) {
 			spectatingIndex--;
 			if(spectatingIndex < 0) spectatingIndex = games.size() - 1;
 			spectating = games.get(spectatingIndex);
 			inputDelay = 0;
-			//this.setTitle("AI Shootout: " + spectatingIndex);
+			writeTitle();
 		}
 	}
 	
@@ -145,6 +155,25 @@ public class Shootout extends JFrame implements Runnable {
 		
 		for(Bullet b : spectating.getBullets()) {
 			bbg.fillOval((int)(b.getX()-2.5), (int)(b.getY()-2.5), 5, 5);
+		}
+
+		Point pos = this.getMousePosition();
+		int x = 0;
+		int width = 30;
+		int height = 10;
+		for(int i = 0; i < games.size(); i++) {
+			double apex = games.get(i).getLocalApex();
+			int y = i * 11 + 30;
+			boolean selected = false;
+			if(pos != null) {
+				selected = pos.x < x + width && pos.y < y + height && pos.x > x && pos.y > y;
+			}
+			if(selected) {
+				bbg.setColor(Color.red);
+				spectatingIndex = i;
+			}
+			bbg.drawString( i + ": " + apex, 5, y + 11);
+			if(selected) bbg.setColor(Color.white);
 		}
 		
 		g.drawImage(backbuffer, 0, 0, this);
