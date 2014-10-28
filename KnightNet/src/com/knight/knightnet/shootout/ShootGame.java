@@ -63,10 +63,7 @@ public class ShootGame {
 			if(b.getShooter() == t && t == players[0]) {
 				t = players[0];
 				ot = players[1];
-			} else if(b.getShooter() == t && t == players[1]) {
-				t = players[1];
-				ot = players[0];
-			} else if(t == ot) {
+			} else/* if(b.getShooter() == t && t == players[1])*/ {
 				t = players[0];
 				ot = players[1];
 			}
