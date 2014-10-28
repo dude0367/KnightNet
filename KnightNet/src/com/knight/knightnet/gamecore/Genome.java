@@ -38,12 +38,21 @@ public class Genome {
 		int g2Weights = g2.weights.size();
 		if(g1Weights != g2Weights) System.out.println("Weights have different amount (" + g1Weights + ":" + g2Weights + ")");
 		if(Math.random() < g1.crossOverRate) {
-			int toSwitch = new Random().nextInt(g1.weights.size() - 1);
-			double g1Fitness = 1;
-			double g2Fitness = 1;
+			//int toSwitch = new Random().nextInt(g1.weights.size() - 1);
+			//double g1Fitness = 1;
+			//double g2Fitness = 1;
 			ArrayList<Double> g1weights = new ArrayList<Double>();
 			ArrayList<Double> g2weights = new ArrayList<Double>();
-			for(int i = 0; i < toSwitch; i++) {
+			for(int i = 0; i < g1.weights.size(); i++) {
+				if(Math.random() > mutationRate) {
+					g1weights.add((g1.weights.get(i) + g2.weights.get(i))/2);
+					g2weights.add((g1.weights.get(i) + g2.weights.get(i))/2);
+				} else {
+					g1weights.add((g1.weights.get(i) + g2.weights.get(i))/2 + (Math.random() - .5) * 2);
+					g2weights.add((g1.weights.get(i) + g2.weights.get(i))/2 + (Math.random() - .5) * 2);
+				}
+			}
+			/*for(int i = 0; i < toSwitch; i++) {
 				if(Math.random() > mutationRate) {
 					g1weights.add(g2.weights.get(i));
 				}
@@ -58,7 +67,7 @@ public class Genome {
 				else g1weights.add(g1.weights.get(i) + (Math.random() - .5) * 2);
 				if(Math.random() > mutationRate) g2weights.add(g2.weights.get(i));
 				else g2weights.add(g2.weights.get(i) + (Math.random() - .5) * 2);
-			}
+			}*/
 			out[0] = new Genome(g1weights, g1.getInputNeurons(), g1.getOutputNeurons(), g1.getHiddenLayers(), g1.getNeuronsPerLayer());
 			out[1] = new Genome(g2weights, g1.getInputNeurons(), g1.getOutputNeurons(), g1.getHiddenLayers(), g1.getNeuronsPerLayer());
 		} else {

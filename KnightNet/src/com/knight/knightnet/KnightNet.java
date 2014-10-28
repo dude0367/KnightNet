@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import com.knight.knightnet.joust.TestGameJoust;
 import com.knight.knightnet.network.Network;
 import com.knight.knightnet.pong.Pong;
+import com.knight.knightnet.shootout.Shootout;
 
 /*(C) Copyright 2014-2015 dude0367 (Knight) & lkarinja (Karinja)
  * This program comes with absolutely no warranty.
@@ -21,6 +22,7 @@ public class KnightNet {
 	
 	static Pong ponggame;
 	static TestGameJoust joustgame;
+	static Shootout shootgame;
 
 	public static void main(String args[]) {//ENTRY POINT TO TEST NETWORK
 		Network network = new Network(1, 2, 2, 3);/*Create network with 1 hidden layer, 
@@ -68,6 +70,10 @@ public class KnightNet {
 					ponggame = new Pong();
 					ponggame.startgame();
 					out = "Starting Pong game";
+				} else if(in.equalsIgnoreCase("game3") || in.equalsIgnoreCase("shoot")) {
+					shootgame = new Shootout();
+					shootgame.startgame();
+					out = "Starting Shootout game";
 				}
 
 				else {

@@ -32,6 +32,8 @@ public class Shootout extends JFrame implements Runnable {
 	ShootGame spectating;
 	int spectatingIndex = 0;
 	double cornerAngle = 0;
+	public int ticks = 0;
+	int generations = 1;
 	
 	public void startgame() {
 		this.setSize(800,600);
@@ -84,6 +86,31 @@ public class Shootout extends JFrame implements Runnable {
 	
 	private void tick(long delta) {
 		if(delta == 0) delta = 1;
+		ticks++;
+		if(ticks > 1000) {
+			System.out.print("EVOLVING (CURRENTLY " + generations + " GENERATION), ");
+			System.out.println("PEAK FITNESS: " + pop.getFittest());
+			pop.evolve();
+			generations++;
+			if(generations % 5 == 0) {
+				System.out.println("CLEANSING WEAK");
+				pop.cleanse();
+			}
+			int size = games.size();
+			games.clear();
+			for(int i = 0; i < size * 2; i+=2) {
+				games.add(new ShootGame(new Tank(pop.population.get(i), pop),
+						new Tank(pop.population.get(i + 1), pop), pop));
+			}
+			/*for(ShootGame g : games) {
+				g.setPlayers(new Tank[] {
+						new Tank(pop.population.get(i), pop),
+						new Tank(pop.population.get(i + 1), pop)
+				});
+				i += 2;
+			}*/
+		}
+		
 		inputDelay++;
 		for(ShootGame g : games) {
 			g.tick(delta);

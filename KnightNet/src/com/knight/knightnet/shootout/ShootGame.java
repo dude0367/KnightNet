@@ -56,14 +56,17 @@ public class ShootGame {
 			}
 		}
 		
-		Tank t = players[0];
-		Tank ot = players[0];
+		Tank t = players[0];//Shooter
+		Tank ot = players[0];//Not shooter
 		ArrayList<Bullet> toRemove = new ArrayList<Bullet>();
 		for(Bullet b : getBullets()) {
 			if(b.getShooter() == t && t == players[0]) {
+				t = players[0];
+				ot = players[1];
+			} else if(b.getShooter() == t && t == players[1]) {
 				t = players[1];
 				ot = players[0];
-			} else if(b.getShooter() == t && t == players[1]) {
+			} else if(t == ot) {
 				t = players[0];
 				ot = players[1];
 			}
