@@ -8,6 +8,7 @@ package com.knight.knightnet.visualizer;
 
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 //http://freespace.virgin.net/hugo.elias/routines/3d_to_2d.htm
 
@@ -41,7 +42,7 @@ public class Visualizer extends JFrame{
 		super("Engine");
 		setSize(width,height);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
+
 		setVisible(true);
 		addKeyListener(new KeyListener(){
 			@Override
@@ -53,65 +54,65 @@ public class Visualizer extends JFrame{
 				double dx = xzLength * Math.cos(y);
 				double dz = xzLength * Math.sin(y);
 				double dy = k * Math.sin(p);
-					switch (e.getKeyCode()){
-					case KeyEvent.VK_W:
-						view.x+=Math.toRadians(1);
-						repaint();
-						break;
-					case KeyEvent.VK_A:
-						view.y+=Math.toRadians(1);
-						repaint();
-						break;
-					case KeyEvent.VK_S:
-						view.x-=Math.toRadians(1);
-						repaint();
-						break;
-					case KeyEvent.VK_D:
-						view.y-=Math.toRadians(1);
-						repaint();
-						break;
-					case KeyEvent.VK_Q:
-						view.z+=Math.toRadians(1);
-						repaint();
-						break;
-					case KeyEvent.VK_E:
-						view.z-=Math.toRadians(1);
-						repaint();
-						break;
-					case KeyEvent.VK_UP:
-						camera.x += dx;
-						camera.y += dy;
-						camera.z += dz;
-						repaint();
-						break;
-					case KeyEvent.VK_LEFT:
-						camera.x += dx;
-						camera.y += dy;
-						camera.z += dz;
-						repaint();
-						break;
-					case KeyEvent.VK_DOWN:
-						camera.x -= dx;
-						camera.y -= dy;
-						camera.z -= dz;
-						repaint();
-						break;
-					case KeyEvent.VK_RIGHT:
-						camera.x += dx;
-						camera.y += dy;
-						camera.z += dz;
-						repaint();
-						break;
-					case KeyEvent.VK_R:
-						camera.x=0.0;
-						camera.y=0.0;
-						camera.z=0.0;
-						view.x=0.0;
-						view.y=0.0;
-						view.z=0.0;
-						repaint();
-						break;
-					}
+				switch (e.getKeyCode()){
+				case KeyEvent.VK_W:
+					view.x+=Math.toRadians(1);
+					repaint();
+					break;
+				case KeyEvent.VK_A:
+					view.y+=Math.toRadians(1);
+					repaint();
+					break;
+				case KeyEvent.VK_S:
+					view.x-=Math.toRadians(1);
+					repaint();
+					break;
+				case KeyEvent.VK_D:
+					view.y-=Math.toRadians(1);
+					repaint();
+					break;
+				case KeyEvent.VK_Q:
+					view.z+=Math.toRadians(1);
+					repaint();
+					break;
+				case KeyEvent.VK_E:
+					view.z-=Math.toRadians(1);
+					repaint();
+					break;
+				case KeyEvent.VK_UP:
+					camera.x += dx;
+					camera.y += dy;
+					camera.z += dz;
+					repaint();
+					break;
+				case KeyEvent.VK_LEFT:
+					camera.x += dx;
+					camera.y += dy;
+					camera.z += dz;
+					repaint();
+					break;
+				case KeyEvent.VK_DOWN:
+					camera.x -= dx;
+					camera.y -= dy;
+					camera.z -= dz;
+					repaint();
+					break;
+				case KeyEvent.VK_RIGHT:
+					camera.x += dx;
+					camera.y += dy;
+					camera.z += dz;
+					repaint();
+					break;
+				case KeyEvent.VK_R:
+					camera.x=0.0;
+					camera.y=0.0;
+					camera.z=0.0;
+					view.x=0.0;
+					view.y=0.0;
+					view.z=0.0;
+					repaint();
+					break;
+				}
 			}
 			@Override
 			public void keyReleased(KeyEvent e){}
@@ -139,8 +140,13 @@ public class Visualizer extends JFrame{
 			}
 		});
 	}
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void paint(Graphics g){
+		if(calc == null) {
+			System.out.println("Calc is null, you dun goofed");
+			return;
+		}
 		g.clearRect(0,0,width,height);
 		P=create(new Vector<Double>(0.0,H,0.0),new Vector<Double>(L,H,0.0),new Vector<Double>(L,0.0,0.0),new Vector<Double>(0.0,0.0,0.0),new Vector<Double>(0.0,H,100.0),new Vector<Double>(L,H,100.0),new Vector<Double>(L,0.0,100.0),new Vector<Double>(0.0,0.0,100.0));
 		for(int i=1;i<=6;i++){
@@ -158,20 +164,20 @@ public class Visualizer extends JFrame{
 		g.setColor(new Color(255,0,0)); //RED
 		Vector<Vector> xAxis=new Vector<Vector>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(100.0,0.0,0.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
 		g.drawLine((int)Math.round((Double)xAxis.x.x),(int)Math.round((Double)xAxis.x.y),(int)Math.round((Double)xAxis.y.x),(int)Math.round((Double)xAxis.y.y));
-		
+
 		g.setColor(new Color(0,255,0)); //GREEN
 		Vector<Vector> yAxis=new Vector<Vector>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(0.0,100.0,0.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
 		g.drawLine((int)Math.round((Double)yAxis.x.x),(int)Math.round((Double)yAxis.x.y),(int)Math.round((Double)yAxis.y.x),(int)Math.round((Double)yAxis.y.y));
-		
+
 		g.setColor(new Color(0,0,255)); //BLUE
 		Vector<Vector> zAxis=new Vector<Vector>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(0.0,0.0,100.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
 		g.drawLine((int)Math.round((Double)zAxis.x.x),(int)Math.round((Double)zAxis.x.y),(int)Math.round((Double)zAxis.y.x),(int)Math.round((Double)zAxis.y.y));
-		
+
 		System.out.println(xAxis.toString());
 		System.out.println(yAxis.toString());
 		System.out.println(zAxis.toString());
 	}
-	public static void main(String[] args) {
+	public static void createVisualizer(/*String[] args*/) {
 		calc=new Calc();
 		camera=new Vector<Double>(200.0,200.0,200.0);
 		view=new Vector<Double>(0.0,0.0,0.0);
@@ -282,11 +288,15 @@ class Prism{
 		return s;
 	}
 }
-class Calc extends Visualizer implements Runnable{
+class Calc /*extends Visualizer*/ implements Runnable{
+	private static final long serialVersionUID = 1L;
 	private boolean isRunning=false;
+	private Thread thread;
 	Calc(){
-		this.isRunning=true;
-		run();
+		thread = new Thread(this);
+		//this.isRunning=true;
+		thread.start();
+		//run();
 	}
 	public Vector<Double> to2D(Vector<Double> point, Vector<Double> camera, Vector<Double> viewAngle){
 		double dX,dY,dZ;
