@@ -1,18 +1,13 @@
 package com.knight.knightnet.visualizer;
 
-import javax.swing.JFrame;
+/*(C) Copyright 2014-2015 dude0367 (Knight) & lkarinja (Karinja)
+ * This program comes with absolutely no warranty.
+ * This program is under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International
+ * and no redistribution, commercial use, or modification can be made without contacting the program's developers.
+ */
 
-/*public class Visualizer extends JFrame {
-	
-	public Visualizer() {
-		
-	}
-
-}*/
-//TEST
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.*;
 //http://freespace.virgin.net/hugo.elias/routines/3d_to_2d.htm
 
@@ -32,7 +27,6 @@ import javax.swing.*;
 
 //http://www.dreamincode.net/forums/topic/239174-3d-perspective-projection/ <-Very helpful
 public class Visualizer extends JFrame{
-	private static final long serialVersionUID = 2615177480997284514L;
 	public static final int height=600;
 	public static final int width=800;
 	public static final double H=100;
@@ -42,7 +36,6 @@ public class Visualizer extends JFrame{
 	public static Vector<Double> camera;
 	public static double rot=0;
 	public static Vector<Double> view;
-	public static Vector<Double> viewpoint;
 	public static Prism P;
 	Visualizer(){
 		super("Engine");
@@ -62,89 +55,51 @@ public class Visualizer extends JFrame{
 				double dy = k * Math.sin(p);
 					switch (e.getKeyCode()){
 					case KeyEvent.VK_W:
-						//view.x -= 0 * Math.cos(Math.toRadians(5)) + 1 * Math.sin(Math.toRadians(5));
-						//view.y -= -0 * Math.sin(Math.toRadians(5)) + 1 * Math.cos(Math.toRadians(5));
-						//Debug only 
 						view.x+=Math.toRadians(1);
-						//view.y%=2*Math.PI;
 						repaint();
 						break;
 					case KeyEvent.VK_A:
-						//view.x-=Math.cos(Math.toRadians(view.y))*Math.toRadians(1);
-						//view.z-=Math.sin(Math.toRadians(view.y))*Math.toRadians(1);
-						//Debug only 
 						view.y+=Math.toRadians(1);
-						//view.x%=2*Math.PI;
 						repaint();
 						break;
 					case KeyEvent.VK_S:
-						//view.y-=Math.cos(Math.toRadians(view.x))*Math.toRadians(1);
-						//Debug only 
 						view.x-=Math.toRadians(1);
-						//view.y%=2*Math.PI;
 						repaint();
 						break;
 					case KeyEvent.VK_D:
-						//view.x+=Math.cos(Math.toRadians(view.y))*Math.toRadians(1);
-						//view.z+=Math.sin(Math.toRadians(view.y))*Math.toRadians(1);
-						//Debug only 
 						view.y-=Math.toRadians(1);
-						//view.x%=2*Math.PI;
 						repaint();
 						break;
 					case KeyEvent.VK_Q:
-						//view.y-=Math.cos(Math.toRadians(view.x))*Math.toRadians(1);
-						//Debug only 
 						view.z+=Math.toRadians(1);
-						//view.y%=2*Math.PI;
 						repaint();
 						break;
 					case KeyEvent.VK_E:
-						//view.x+=Math.cos(Math.toRadians(view.y))*Math.toRadians(1);
-						//view.z+=Math.sin(Math.toRadians(view.y))*Math.toRadians(1);
-						//Debug only 
 						view.z-=Math.toRadians(1);
-						//view.x%=2*Math.PI;
 						repaint();
 						break;
 					case KeyEvent.VK_UP:
 						camera.x += dx;
 						camera.y += dy;
 						camera.z += dz;
-						//camera.y-=25.0;
-						/*camera.x += 5.0 * view.z;
-						camera.y += 5.0 * view.y;
-						camera.z += 5.0 * view.z;
-						viewpoint.x += 5.0 * view.z;
-						viewpoint.y += 5.0 * view.y;
-						viewpoint.z += 5.0 * view.z;*/
 						repaint();
 						break;
 					case KeyEvent.VK_LEFT:
 						camera.x += dx;
 						camera.y += dy;
 						camera.z += dz;
-						//camera.x-=25.0;
 						repaint();
 						break;
 					case KeyEvent.VK_DOWN:
 						camera.x -= dx;
 						camera.y -= dy;
 						camera.z -= dz;
-						//camera.y+=25.0;
-						/*camera.x -= 5.0 * view.z;
-						camera.y -= 5.0 * view.y;
-						camera.z -= 5.0 * view.z;
-						viewpoint.x += 5.0 * view.z;
-						viewpoint.y += 5.0 * view.y;
-						viewpoint.z += 5.0 * view.z;*/
 						repaint();
 						break;
 					case KeyEvent.VK_RIGHT:
 						camera.x += dx;
 						camera.y += dy;
 						camera.z += dz;
-						//camera.x+=25.0;
 						repaint();
 						break;
 					case KeyEvent.VK_R:
@@ -168,7 +123,6 @@ public class Visualizer extends JFrame{
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				System.out.println("Camera: "+camera.toString());
-				System.out.println("Viewpoint: "+viewpoint.toString());
 			}
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
@@ -193,27 +147,24 @@ public class Visualizer extends JFrame{
 			Side s=P.getSide(i);
 			Polygon p=new Polygon();
 			for(int k=1;k<=4;k++){
-				Vector<Double> point=calc.to2D(s.getVector(k), camera, view, viewpoint);
-				//Rounding errors below(?)...
+				Vector<Double> point=calc.to2D(s.getVector(k), camera, view);
 				int x=(int) Math.round((Double)point.x);
 				int y=(int) Math.round((Double)point.y);
 				p.addPoint(x,y);
-				//System.out.println("Side:"+i+"Point:"+k+" X:"+x+"   Y:"+y);
-				//System.out.println("Camera: X:"+camera.x+"   Y:"+camera.y);
 			}
 			g.drawPolygon(p);
 			p.invalidate();
 		}
 		g.setColor(new Color(255,0,0)); //RED
-		Vector<Vector> xAxis=new Vector<Vector>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view, viewpoint),calc.to2D(new Vector<Double>(100.0,0.0,0.0), camera, view, viewpoint), new Vector<Double>(0.0,0.0,0.0));
+		Vector<Vector> xAxis=new Vector<Vector>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(100.0,0.0,0.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
 		g.drawLine((int)Math.round((Double)xAxis.x.x),(int)Math.round((Double)xAxis.x.y),(int)Math.round((Double)xAxis.y.x),(int)Math.round((Double)xAxis.y.y));
 		
 		g.setColor(new Color(0,255,0)); //GREEN
-		Vector<Vector> yAxis=new Vector<Vector>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view, viewpoint),calc.to2D(new Vector<Double>(0.0,100.0,0.0), camera, view, viewpoint), new Vector<Double>(0.0,0.0,0.0));
+		Vector<Vector> yAxis=new Vector<Vector>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(0.0,100.0,0.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
 		g.drawLine((int)Math.round((Double)yAxis.x.x),(int)Math.round((Double)yAxis.x.y),(int)Math.round((Double)yAxis.y.x),(int)Math.round((Double)yAxis.y.y));
 		
 		g.setColor(new Color(0,0,255)); //BLUE
-		Vector<Vector> zAxis=new Vector<Vector>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view, viewpoint),calc.to2D(new Vector<Double>(0.0,0.0,100.0), camera, view, viewpoint), new Vector<Double>(0.0,0.0,0.0));
+		Vector<Vector> zAxis=new Vector<Vector>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(0.0,0.0,100.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
 		g.drawLine((int)Math.round((Double)zAxis.x.x),(int)Math.round((Double)zAxis.x.y),(int)Math.round((Double)zAxis.y.x),(int)Math.round((Double)zAxis.y.y));
 		
 		System.out.println(xAxis.toString());
@@ -223,7 +174,6 @@ public class Visualizer extends JFrame{
 	public static void main(String[] args) {
 		calc=new Calc();
 		camera=new Vector<Double>(200.0,200.0,200.0);
-		viewpoint=new Vector<Double>(200.0,200.0,200.0);
 		view=new Vector<Double>(0.0,0.0,0.0);
 		engine=new Visualizer();
 	}
@@ -332,10 +282,13 @@ class Prism{
 		return s;
 	}
 }
-class Calc extends Visualizer{
+class Calc extends Visualizer implements Runnable{
+	private boolean isRunning=false;
 	Calc(){
+		this.isRunning=true;
+		run();
 	}
-	public Vector<Double> to2D(Vector<Double> point, Vector<Double> camera, Vector<Double> viewAngle, Vector<Double> viewpoint){
+	public Vector<Double> to2D(Vector<Double> point, Vector<Double> camera, Vector<Double> viewAngle){
 		double dX,dY,dZ;
 		double aX,aY,aZ;
 		double cX,cY,cZ; 
@@ -345,46 +298,36 @@ class Calc extends Visualizer{
 		aX=point.x;
 		aY=point.y;
 		aZ=point.z;
-		//System.out.println("A's: X:"+aX+"   Y:"+aY+"   Z:"+aZ);
 		cX=camera.x;
 		cY=camera.y;
 		cZ=camera.z;
-		//System.out.println("C's: X:"+cX+"   Y:"+cY+"   Z:"+cZ);
-		/*thetaX=Math.toDegrees(viewAngle.x);
-		thetaY=Math.toDegrees(viewAngle.y);
-		thetaZ=Math.toDegrees(viewAngle.z);*/
 		thetaX=viewAngle.x;
 		thetaY=viewAngle.y;
 		thetaZ=viewAngle.z;
-		//System.out.println("Theta's: X:"+thetaX+"   Y:"+thetaY+"   Z:"+thetaZ);
-		//This is the same as the camera position for now...
-		//Above statement is wrong, eZ is distance from camera to screen (make it 50 for now(?))
-		/*eX=camera.x;
+		eX=camera.x;
 		eY=camera.y;
-		eZ=camera.z;*/
-		eX=viewpoint.x;
-		eY=viewpoint.y;
-		eZ=500;//viewpoint.z;
-		//System.out.println("E's: X:"+eX+"   Y:"+eY+"   Z:"+eZ);
-		//Fix Me Below! /*http://en.wikipedia.org/wiki/3D_projection#Perspective_projection*/
-		//dX=Math.cos(Math.sin(aY-cY)+Math.cos(aX-cY))-Math.sin(aZ-cZ);
-		//dY=Math.sin(Math.cos(aZ-cZ)+Math.sin(Math.sin(aY-cY)+Math.cos(aX-cX)))+Math.cos(Math.cos(aY-cY)-Math.sin(aX-cX));
-		//dZ=Math.cos(Math.cos(aZ-cZ)+Math.sin(Math.sin(aY-cY)+Math.cos(aX-cX)))-Math.sin(Math.cos(aY-cY)-Math.sin(aX-cX));
-		//sin and cos need to be of theta and then multiplied by whatever I thought was in the parenthises
-		
-		//This also seems to be wrong... Change all of the trig stuff that was changed before to the thetaN values
-		//dX=Math.cos(aY-cY)*(Math.sin(aZ-cZ)*(aY-cY)+Math.cos(aZ-cZ)*(aX-cY))-Math.sin(aY-cY)*(aZ-cZ);
-		//dY=Math.sin(aX-cX)*(Math.cos(aY-cY)*(aZ-cZ)+Math.sin(aY-cY)*(Math.sin(aZ-cZ)*(aY-cY)+Math.cos(aZ-cZ)*(aX-cX)))+Math.cos(aX-cX)*(Math.cos(aZ-cZ)*(aY-cY)-Math.sin(aZ-cZ)*(aX-cX));
-		//dZ=Math.cos(aX-cX)*(Math.cos(aY-cY)*(aZ-cZ)+Math.sin(aY-cY)*(Math.sin(aZ-cZ)*(aY-cY)+Math.cos(aZ-cZ)*(aX-cX)))-Math.sin(aX-cX)*(Math.cos(aZ-cZ)*(aY-cY)-Math.sin(aZ-cZ)*(aX-cX));
-		
-		//Trying this next...
+		eZ=500;
 		dX=Math.cos(thetaY)*(Math.sin(thetaZ)*(aY-cY)+Math.cos(thetaZ)*(aX-cY))-Math.sin(thetaY)*(aZ-cZ);
 		dY=Math.sin(thetaX)*(Math.cos(thetaY)*(aZ-cZ)+Math.sin(thetaY)*(Math.sin(thetaZ)*(aY-cY)+Math.cos(thetaZ)*(aX-cX)))+Math.cos(thetaX)*(Math.cos(thetaZ)*(aY-cY)-Math.sin(thetaZ)*(aX-cX));
 		dZ=Math.cos(thetaX)*(Math.cos(thetaY)*(aZ-cZ)+Math.sin(thetaY)*(Math.sin(thetaZ)*(aY-cY)+Math.cos(thetaZ)*(aX-cX)))-Math.sin(thetaX)*(Math.cos(thetaZ)*(aY-cY)-Math.sin(thetaZ)*(aX-cX));
-		//System.out.println("D's: X:"+dX+"   Y:"+dY+"   Z:"+dZ);
 		bX=((eZ/dZ)*dX)-eX;
 		bY=((eZ/dZ)*dY)-eY;
-		//System.out.println("B's: X:"+bX+"   Y:"+bY);
 		return new Vector<Double>(bX,bY,0.0);
+	}
+	@Override
+	public void run() {
+		while(this.isRunning);
+	}
+	public boolean isRunning() {
+		return isRunning;
+	}
+	public boolean stop(){
+		try{
+			this.isRunning=false;
+			return true;
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return false;
 	}
 }
