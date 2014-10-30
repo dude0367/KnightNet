@@ -32,7 +32,7 @@ public class Tank extends Agent {
 	}
 
 	public Bullet fire() {
-		//this.changeFitness(-.1);
+		this.changeFitness(-.1);
 		Bullet b = new Bullet();
 		b.setShooter(this);
 		b.setAngle(direction);

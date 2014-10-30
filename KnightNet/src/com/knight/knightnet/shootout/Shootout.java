@@ -52,9 +52,9 @@ public class Shootout extends JFrame implements Runnable {
 		pop = new Population();
 		for(int i = 0; i < 50; i++) {
 			Agent a = new Agent(pop);
-			a.setGenome(new Genome(/*6*/5, 2, 5, 6));
+			a.setGenome(new Genome(/*6*/5, 3, 3, 5));
 			Agent b = new Agent(pop);
-			b.setGenome(new Genome(5, 2, 5, 6));
+			b.setGenome(new Genome(5, 3, 3, 5));
 			agents.add(a);
 			agents.add(b);
 			games.add(new ShootGame(a,b, pop));
