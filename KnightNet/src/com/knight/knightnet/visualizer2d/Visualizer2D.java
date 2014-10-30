@@ -15,8 +15,8 @@ import com.knight.knightnet.network.Population;
 public class Visualizer2D extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
-	private Population pop;
-	BufferedImage backbuffer;
+	protected Population pop;
+	protected BufferedImage backbuffer;
 	
 	public Visualizer2D() {
 		this.setSize(800, 600);

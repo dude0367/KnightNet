@@ -6,10 +6,19 @@ package com.knight.knightnet.visualizer;
  * and no redistribution, commercial use, or modification can be made without contacting the program's developers.
  */
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 
-import javax.swing.*;
+import com.knight.knightnet.gamecore.Agent;
+import com.knight.knightnet.network.Layer;
+import com.knight.knightnet.network.Neuron;
+import com.knight.knightnet.visualizer2d.Visualizer2D;
 //http://freespace.virgin.net/hugo.elias/routines/3d_to_2d.htm
 
 //http://en.wikipedia.org/wiki/Triangulation <-Read me
@@ -27,20 +36,19 @@ import javax.swing.*;
 //http://stackoverflow.com/questions/701504/perspective-projection-help-a-noob
 
 //http://www.dreamincode.net/forums/topic/239174-3d-perspective-projection/ <-Very helpful
-public class Visualizer extends JFrame{
-	public static final int height=600;
-	public static final int width=800;
-	public static final double H=100;
-	public static final double L=100;
-	public static Visualizer engine;
-	public static Calc calc;
-	public static Vector<Double> camera;
-	public static double rot=0;
-	public static Vector<Double> view;
-	public static Prism P;
+public class Visualizer extends Visualizer2D{
+	private static final long serialVersionUID = 13374208008135L;
+	private static final int HEIGHT=600;
+	private static final int WIDTH=800;
+	protected static Calc calc;
+	protected static Vector<Double> camera;
+	protected static Vector<Double> view;
 	Visualizer(){
-		super("Engine");
-		setSize(width,height);
+		calc=new Calc();
+		camera=new Vector<Double>(200.0,200.0,200.0);
+		view=new Vector<Double>(0.0,0.0,0.0);
+		
+		setSize(WIDTH,HEIGHT);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		setVisible(true);
@@ -140,58 +148,81 @@ public class Visualizer extends JFrame{
 			}
 		});
 	}
-	@SuppressWarnings("rawtypes")
 	@Override
-	public void paint(Graphics g){
-		if(calc == null) {
-			System.out.println("Calc is null, you dun goofed");
-			return;
-		}
-		g.clearRect(0,0,width,height);
-		P=create(new Vector<Double>(0.0,H,0.0),new Vector<Double>(L,H,0.0),new Vector<Double>(L,0.0,0.0),new Vector<Double>(0.0,0.0,0.0),new Vector<Double>(0.0,H,100.0),new Vector<Double>(L,H,100.0),new Vector<Double>(L,0.0,100.0),new Vector<Double>(0.0,0.0,100.0));
-		for(int i=1;i<=6;i++){
-			Side s=P.getSide(i);
-			Polygon p=new Polygon();
-			for(int k=1;k<=4;k++){
-				Vector<Double> point=calc.to2D(s.getVector(k), camera, view);
-				int x=(int) Math.round((Double)point.x);
-				int y=(int) Math.round((Double)point.y);
-				p.addPoint(x,y);
-			}
-			g.drawPolygon(p);
-			p.invalidate();
-		}
+	public void draw(){
+		/*
+		g.clearRect(0,0,width,HEIGHT);
+
 		g.setColor(new Color(255,0,0)); //RED
-		Vector<Vector> xAxis=new Vector<Vector>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(100.0,0.0,0.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
+		Vector<Vector<Double>> xAxis=new Vector<Vector<Double>>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(100.0,0.0,0.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
 		g.drawLine((int)Math.round((Double)xAxis.x.x),(int)Math.round((Double)xAxis.x.y),(int)Math.round((Double)xAxis.y.x),(int)Math.round((Double)xAxis.y.y));
 
 		g.setColor(new Color(0,255,0)); //GREEN
-		Vector<Vector> yAxis=new Vector<Vector>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(0.0,100.0,0.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
+		Vector<Vector<Double>> yAxis=new Vector<Vector<Double>>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(0.0,100.0,0.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
 		g.drawLine((int)Math.round((Double)yAxis.x.x),(int)Math.round((Double)yAxis.x.y),(int)Math.round((Double)yAxis.y.x),(int)Math.round((Double)yAxis.y.y));
 
 		g.setColor(new Color(0,0,255)); //BLUE
-		Vector<Vector> zAxis=new Vector<Vector>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(0.0,0.0,100.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
+		Vector<Vector<Double>> zAxis=new Vector<Vector<Double>>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(0.0,0.0,100.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
 		g.drawLine((int)Math.round((Double)zAxis.x.x),(int)Math.round((Double)zAxis.x.y),(int)Math.round((Double)zAxis.y.x),(int)Math.round((Double)zAxis.y.y));
 
 		System.out.println(xAxis.toString());
 		System.out.println(yAxis.toString());
 		System.out.println(zAxis.toString());
-	}
-	public static void createVisualizer(/*String[] args*/) {
-		calc=new Calc();
-		camera=new Vector<Double>(200.0,200.0,200.0);
-		view=new Vector<Double>(0.0,0.0,0.0);
-		engine=new Visualizer();
-	}
-	public Prism create(Vector<Double> vert1,Vector<Double> vert2,Vector<Double> vert3,Vector<Double> vert4,Vector<Double> vert5,Vector<Double> vert6,Vector<Double> vert7,Vector<Double> vert8){
-		Side s1,s2,s3,s4,s5,s6;
-		s1=new Side(new Vector<Double>(vert1.x,vert1.y,vert1.z), new Vector<Double>(vert2.x,vert2.y,vert2.z),new Vector<Double>(vert3.x,vert3.y,vert3.z), new Vector<Double>(vert4.x,vert4.y,vert4.z));
-		s2=new Side(new Vector<Double>(vert1.x,vert1.y,vert1.z), new Vector<Double>(vert2.x,vert2.y,vert2.z),new Vector<Double>(vert6.x,vert6.y,vert6.z), new Vector<Double>(vert5.x,vert5.y,vert5.z));
-		s3=new Side(new Vector<Double>(vert1.x,vert1.y,vert1.z), new Vector<Double>(vert4.x,vert4.y,vert4.z),new Vector<Double>(vert8.x,vert8.y,vert8.z), new Vector<Double>(vert5.x,vert5.y,vert5.z));
-		s4=new Side(new Vector<Double>(vert2.x,vert2.y,vert2.z), new Vector<Double>(vert3.x,vert3.y,vert3.z),new Vector<Double>(vert7.x,vert7.y,vert7.z), new Vector<Double>(vert6.x,vert6.y,vert6.z));
-		s5=new Side(new Vector<Double>(vert5.x,vert5.y,vert5.z), new Vector<Double>(vert6.x,vert6.y,vert6.z),new Vector<Double>(vert7.x,vert7.y,vert7.z), new Vector<Double>(vert8.x,vert8.y,vert8.z));
-		s6=new Side(new Vector<Double>(vert3.x,vert3.y,vert3.z), new Vector<Double>(vert4.x,vert4.y,vert4.z),new Vector<Double>(vert8.x,vert8.y,vert8.z), new Vector<Double>(vert7.x,vert7.y,vert7.z));
-		return new Prism(s1,s2,s3,s4,s5,s6);
+		 */
+		if(backbuffer == null) backbuffer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		if(backbuffer.getWidth() != getWidth() || backbuffer.getHeight() != getHeight()) backbuffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+		Graphics g = getGraphics();
+		Graphics bbg = backbuffer.getGraphics();
+		bbg.clearRect(0, 0, getWidth(), getHeight());
+		Agent top = null;
+		for(Agent a : pop.population) {
+			if(a.getFitness() == pop.getFittest()) {
+				top = a;
+				break;
+			}
+		}
+		if(top == null) top = pop.population.get(0);
+		int layercount = top.getGenome().getNetwork().getLayers().size();
+		int spread = (this.getWidth() - 70) / (layercount - 1);
+		int x = 25;
+		int lastySpread = 0;
+		int width = 25;
+		int height = 25;
+		for(Layer l : top.getGenome().getNetwork().getLayers()) {
+			int neuroncount = l.getNeurons().size();
+			int yspread = (this.getHeight() - 70) / (neuroncount - 1);
+			int y = 35;
+			for(Neuron n : l.getNeurons()) {
+				boolean selected = false;
+				Point pos = this.getMousePosition();
+				if(pos != null) selected = pos.x < x + width && pos.y < y + height && pos.x > x && pos.y > y;
+				if(selected) {
+					bbg.fillRect(x, y, width, height);
+				}
+				else bbg.drawRect(x, y, width, height);
+
+				if(l.getPrevious() != null) {
+					int tempY = 35;
+					for(Neuron nn : l.getPrevious().getNeurons()) {
+						if(selected) {
+							bbg.setColor(Color.red);
+							bbg.drawLine(x - spread + width, tempY + height/2, x, y + height/2);
+							bbg.setColor(Color.ORANGE);
+							bbg.drawString("" + n.getWeights().get(nn), x - (spread)/2 - 5, y - (y-tempY)/2 + 10);
+						} else {
+							bbg.drawLine(x - spread + width, tempY + height/2, x, y + height/2);
+						}
+						bbg.setColor(Color.white);
+						tempY += lastySpread;
+					}
+				}
+				y+=yspread;
+			}
+			lastySpread = yspread;
+			x+=spread;
+		}
+
+		g.drawImage(backbuffer, 0, 0, this);
 	}
 }
 class Vector<E> extends Object{
@@ -207,96 +238,14 @@ class Vector<E> extends Object{
 		return s;
 	}
 }
-class Side{
-	public Vector<Double> v1,v2,v3,v4;
-	Side(){}
-	Side(Vector<Double> v1, Vector<Double> v2, Vector<Double> v3, Vector<Double> v4){
-		this.v1=v1;
-		this.v2=v2;
-		this.v3=v3;
-		this.v4=v4;
-	}
-	public Vector<Double> getVector(int k){
-		Vector<Double> v=new Vector<Double>();
-		switch(k){
-		case 1:
-			v=v1;
-			break;
-		case 2:
-			v=v2;
-			break;
-		case 3:
-			v=v3;
-			break;
-		case 4:
-			v=v4;
-			break;
-		}
-		return v;
-	}
-	public String toString(){
-		String s1,s2,s3,s4;
-		s1=String.format("%-20S",v1.toString());
-		s2=String.format("%-20S",v2.toString());
-		s3=String.format("%-20S",v3.toString());
-		s4=String.format("%-20S",v4.toString());
-		return (s1+s2+"\n"+s3+s4+"\n");
-	}
-}
-class Prism{
-	public Side s1,s2,s3,s4,s5,s6;
-	Prism(Side s1,Side s2,Side s3,Side s4,Side s5,Side s6){
-		this.s1=s1;
-		this.s2=s2;
-		this.s3=s3;
-		this.s4=s4;
-		this.s5=s5;
-		this.s6=s6;
-	}
-	public Side getSide(int k){
-		Side s=new Side();
-		switch(k){
-		case 1:
-			s=s1;
-			break;
-		case 2:
-			s=s2;
-			break;
-		case 3:
-			s=s3;
-			break;
-		case 4:
-			s=s4;
-			break;
-		case 5:
-			s=s5;
-			break;
-		case 6:
-			s=s6;
-			break;
-		}
-		return s;
-	}
-	public String toString(){
-		String s="";
-		s+="1:"+s1.toString()+"\n\n";
-		s+="2:"+s2.toString()+"\n\n";
-		s+="3:"+s3.toString()+"\n\n";
-		s+="4:"+s4.toString()+"\n\n";
-		s+="5:"+s5.toString()+"\n\n";
-		s+="6:"+s6.toString()+"\n\n";
-		return s;
-	}
-}
-class Calc /*extends Visualizer*/ implements Runnable{
+class Calc implements Runnable{
 	private static final long serialVersionUID = 1L;
 	private boolean isRunning=false;
 	private Thread thread;
 	Calc(){
 		thread = new Thread(this);
-		//this.isRunning=true;
+		isRunning=true;
 		thread.start();
-		//run();
 	}
 	public Vector<Double> to2D(Vector<Double> point, Vector<Double> camera, Vector<Double> viewAngle){
 		double dX,dY,dZ;
@@ -326,7 +275,9 @@ class Calc /*extends Visualizer*/ implements Runnable{
 	}
 	@Override
 	public void run() {
-		while(this.isRunning);
+		while(this.isRunning){
+			//Have thread running...
+		}
 	}
 	public boolean isRunning() {
 		return isRunning;
