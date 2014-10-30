@@ -52,9 +52,9 @@ public class Shootout extends JFrame implements Runnable {
 		pop = new Population();
 		for(int i = 0; i < 50; i++) {
 			Agent a = new Agent(pop);
-			a.setGenome(new Genome(/*6*/4, 3, 3, 6));
+			a.setGenome(new Genome(/*6*/5, 2, 5, 6));
 			Agent b = new Agent(pop);
-			b.setGenome(new Genome(4, 3, 3, 6));
+			b.setGenome(new Genome(5, 2, 5, 6));
 			agents.add(a);
 			agents.add(b);
 			games.add(new ShootGame(a,b, pop));
@@ -95,7 +95,7 @@ public class Shootout extends JFrame implements Runnable {
 	private void tick(long delta) {
 		if(delta == 0) delta = 1;
 		ticks++;
-		if(ticks > 1000) {
+		if(ticks > 5000) {
 			System.out.print("EVOLVING (CURRENTLY " + generations + " GENERATION), ");
 			System.out.println("PEAK FITNESS: " + pop.getFittest());
 			generations++;
@@ -140,6 +140,14 @@ public class Shootout extends JFrame implements Runnable {
 			inputDelay = 0;
 			writeTitle();
 		}
+		if(ticks > 20 && !speedmode && input.getKey(KeyEvent.VK_ENTER)) {
+			speedmode = true;
+			ticks = 0;
+		}
+		if(speedmode && input.getKey(KeyEvent.VK_BACK_SLASH)) {
+			speedmode = false;
+			ticks = 0;
+		}
 	}
 	
 	private void draw() {
@@ -171,6 +179,7 @@ public class Shootout extends JFrame implements Runnable {
 			if(selected) {
 				bbg.setColor(Color.red);
 				spectatingIndex = i;
+				spectating = this.games.get(i);
 			}
 			bbg.drawString( i + ": " + apex, 5, y + 11);
 			if(selected) bbg.setColor(Color.white);
@@ -187,11 +196,22 @@ public class Shootout extends JFrame implements Runnable {
 		double angle = t.getDirection();
 		if(cornerAngle == 0) cornerAngle = Math.atan(Tank.height / Tank.width);
 		Point a = new Point(), b = new Point(), c = new Point(), d = new Point(), e = new Point();
+		Point f = new Point(), gg = new Point();
 		a.setLocation(x + xShift * Math.cos(cornerAngle + angle), y + yShift * Math.sin(cornerAngle + angle));
 		d.setLocation(x + xShift * Math.cos(cornerAngle + angle + Math.PI/2), y + yShift * Math.sin(cornerAngle + angle + Math.PI/2));
 		c.setLocation(x + xShift * Math.cos(cornerAngle + angle + Math.PI), y + yShift * Math.sin(cornerAngle + angle + Math.PI));
 		b.setLocation(x + xShift * Math.cos(cornerAngle + angle + 3*(Math.PI/2)), y + yShift * Math.sin(cornerAngle + angle + (Math.PI/2) * 3));
 		e.setLocation(x + Tank.barrelLength * Math.cos(angle), y + Tank.barrelLength * Math.sin(angle));
+		
+		//FOV
+		f.setLocation(x + 1000 * Math.cos(angle + t.getFOV() / 2), y + 1000 * Math.sin(angle + t.getFOV() / 2));
+		gg.setLocation(x + 1000 * Math.cos(angle - t.getFOV() / 2), y + 1000 * Math.sin(angle - t.getFOV() / 2));
+		
+		g.setColor(Color.GRAY);
+		g.drawLine(x, y, f.x, f.y);
+		g.drawLine(x, y, gg.x, gg.y);
+		g.setColor(Color.WHITE);
+		
 		g.drawLine(a.x, a.y, b.x, b.y);
 		g.drawLine(b.x, b.y, c.x, c.y);
 		g.drawLine(c.x, c.y, d.x, d.y);

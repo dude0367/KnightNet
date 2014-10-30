@@ -56,7 +56,7 @@ public class TestGameJoust extends JFrame implements Runnable {
 	public void run() {
 		pop = new Population(new ArrayList<Agent>());
 		for(int i = 0; i < jousterCount; i++) {
-			Agent a = new Agent(new Genome(3,3, hiddenLayers, neuronsPerLayer), pop);
+			Agent a = new Agent(new Genome(4,3, hiddenLayers, neuronsPerLayer), pop);
 			a.setX(game.getWidth() * Math.random());
 			a.setY(game.getHeight() * Math.random());
 			Jouster j = new Jouster(a, pop);
@@ -148,7 +148,7 @@ public class TestGameJoust extends JFrame implements Runnable {
 			double yDiff = y - closest.getY();
 			dist = 1;//DON'T NORMALIZE, THEY SHOULD KNOW HOW FAR THEIR TARGET IS
 			double[] output = j.getGenome().getNetwork().process(new double[] {
-					xDiff/dist, yDiff/dist, j.getLanceAngle()
+					xDiff/dist, yDiff/dist, j.getLanceAngle(), j.isStabbing() ? 1 : 0
 			});
 			output[0] -= .5;
 			output[1] -= .5;
@@ -183,7 +183,10 @@ public class TestGameJoust extends JFrame implements Runnable {
 			p.setLocation(lanceX, lanceY);
 			if(new Rectangle((int)closest.getX(), (int)closest.getY(), jousterLength, jousterLength).contains(p)) {
 				j.changeFitness(5);
+				j.setStabbing(true);
 				closest.changeFitness(-2.5);
+			} else {
+				j.setStabbing(false);
 			}
 			if(j.getFitness() > 5 && !input.getKey(KeyEvent.VK_ENTER)) {
 				//speedmode = false;

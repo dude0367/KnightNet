@@ -13,6 +13,7 @@ public class Tank extends Agent {
 	private double direction = 0;
 	private double colliderDist = 0;
 	private double cannonCooldown = 0;
+	private double FOV = Math.PI / 10;
 	
 	public Tank(Agent a, Population pop) {
 		super(a, pop);
@@ -60,6 +61,10 @@ public class Tank extends Agent {
 	
 	public void coolCannon(double cool) {
 		this.cannonCooldown -= cool;
+	}
+
+	public double getFOV() {
+		return this.FOV;
 	}
 
 }

@@ -47,8 +47,13 @@ public class ShootGame {
 					dist = tempDist;
 				}
 			}
+			double angleToEnemy = Math.atan((t.getX() - tt.getX()) / (t.getY() - tt.getY()));
+			boolean pointingAtEnemy = (t.getDirection() + t.getFOV()/2) > angleToEnemy && (t.getDirection() - t.getFOV()/2) < angleToEnemy;
+			
 			double output[] = players[i].getGenome().getNetwork().process(new double[] {
-					xVec, yVec, Math.cos(t.getDirection()), Math.sin(t.getDirection()), bxVec, byVec
+					xVec, yVec, Math.cos(t.getDirection()), 
+					Math.sin(t.getDirection()), bxVec, byVec,
+					pointingAtEnemy ? 1 : 0
 			});
 			t.changeDirection(output[0] - .5);
 			output[1] -= .5;
@@ -61,7 +66,7 @@ public class ShootGame {
 			if(t.getY() > Shootout.shootout.getHeight()) t.setY(Shootout.shootout.getHeight());
 			if(output[2] > .5 && t.getCannonCooldown() <= 0) {
 				bullets.add(t.fire());
-				t.setCannonCooldown(5);
+				t.setCannonCooldown(20);
 			}
 			t.coolCannon(0.1 * delta);
 		}
