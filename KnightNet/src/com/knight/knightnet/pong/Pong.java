@@ -11,6 +11,7 @@ import com.knight.input.InputHandler;
 import com.knight.knightnet.gamecore.Agent;
 import com.knight.knightnet.gamecore.Genome;
 import com.knight.knightnet.network.Population;
+import com.knight.knightnet.visualizer.Visualizer;
 
 public class Pong extends JFrame implements Runnable {
 
@@ -22,6 +23,7 @@ public class Pong extends JFrame implements Runnable {
 	int inputDelay = 0;
 	InputHandler input;
 	boolean running = true;
+	public Visualizer vis;
 	
 	ArrayList<PongGame> games = new ArrayList<PongGame>();
 	ArrayList<Agent> agents = new ArrayList<Agent>();
@@ -93,6 +95,9 @@ public class Pong extends JFrame implements Runnable {
 			inputDelay = 0;
 			this.setTitle("AI Pong: " + spectatingIndex);
 		}
+		if(vis==null){
+			vis=new Visualizer();
+		}
 	}
 	
 	private void draw() {
@@ -107,7 +112,9 @@ public class Pong extends JFrame implements Runnable {
 		bbg.fillRect((int)spectating.paddles[1].getX(), (int)spectating.paddles[1].getY(), Paddle.width, Paddle.height);
 		
 		bbg.fillOval((int)spectating.ball.getX()-5, (int)spectating.ball.getY()-5, 10, 10);
-		
+		if(vis!=null){
+			vis.draw(pop);
+		}
 		g.drawImage(backbuffer, 0, 0, this);
 	}
 

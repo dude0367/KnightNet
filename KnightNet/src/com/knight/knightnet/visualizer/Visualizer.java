@@ -8,17 +8,15 @@ package com.knight.knightnet.visualizer;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
-import com.knight.knightnet.gamecore.Agent;
-import com.knight.knightnet.network.Layer;
-import com.knight.knightnet.network.Neuron;
-import com.knight.knightnet.visualizer2d.Visualizer2D;
+import javax.swing.JFrame;
+
+import com.knight.knightnet.network.Population;
 //http://freespace.virgin.net/hugo.elias/routines/3d_to_2d.htm
 
 //http://en.wikipedia.org/wiki/Triangulation <-Read me
@@ -36,18 +34,22 @@ import com.knight.knightnet.visualizer2d.Visualizer2D;
 //http://stackoverflow.com/questions/701504/perspective-projection-help-a-noob
 
 //http://www.dreamincode.net/forums/topic/239174-3d-perspective-projection/ <-Very helpful
-public class Visualizer extends Visualizer2D{
+public class Visualizer extends JFrame{
 	private static final long serialVersionUID = 13374208008135L;
-	private static final int HEIGHT=600;
-	private static final int WIDTH=800;
+	private final int HEIGHT=600;
+	private final int WIDTH=800;
 	protected static Calc calc;
 	protected static Vector<Double> camera;
 	protected static Vector<Double> view;
+	protected Population pop;
+	protected BufferedImage backbuffer;
+
 	public Visualizer(){
+		this.setTitle("ANN Visualizer");
 		calc=new Calc();
 		camera=new Vector<Double>(200.0,200.0,200.0);
 		view=new Vector<Double>(0.0,0.0,0.0);
-		
+
 		setSize(WIDTH,HEIGHT);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -65,52 +67,52 @@ public class Visualizer extends Visualizer2D{
 				switch (e.getKeyCode()){
 				case KeyEvent.VK_W:
 					view.x+=Math.toRadians(1);
-					repaint();
+					draw();
 					break;
 				case KeyEvent.VK_A:
 					view.y+=Math.toRadians(1);
-					repaint();
+					draw();
 					break;
 				case KeyEvent.VK_S:
 					view.x-=Math.toRadians(1);
-					repaint();
+					draw();
 					break;
 				case KeyEvent.VK_D:
 					view.y-=Math.toRadians(1);
-					repaint();
+					draw();
 					break;
 				case KeyEvent.VK_Q:
 					view.z+=Math.toRadians(1);
-					repaint();
+					draw();
 					break;
 				case KeyEvent.VK_E:
 					view.z-=Math.toRadians(1);
-					repaint();
+					draw();
 					break;
 				case KeyEvent.VK_UP:
 					camera.x += dx;
 					camera.y += dy;
 					camera.z += dz;
-					repaint();
+					draw();
 					break;
-				case KeyEvent.VK_LEFT:
+					/*case KeyEvent.VK_LEFT:
 					camera.x += dx;
 					camera.y += dy;
 					camera.z += dz;
 					repaint();
-					break;
+					break;*/
 				case KeyEvent.VK_DOWN:
 					camera.x -= dx;
 					camera.y -= dy;
 					camera.z -= dz;
-					repaint();
+					draw();
 					break;
-				case KeyEvent.VK_RIGHT:
+					/*case KeyEvent.VK_RIGHT:
 					camera.x += dx;
 					camera.y += dy;
 					camera.z += dz;
 					repaint();
-					break;
+					break;*/
 				case KeyEvent.VK_R:
 					camera.x=0.0;
 					camera.y=0.0;
@@ -118,7 +120,7 @@ public class Visualizer extends Visualizer2D{
 					view.x=0.0;
 					view.y=0.0;
 					view.z=0.0;
-					repaint();
+					draw();
 					break;
 				}
 			}
@@ -148,81 +150,43 @@ public class Visualizer extends Visualizer2D{
 			}
 		});
 	}
-	@Override
+	public void draw(Population pop) {
+		this.setPop(pop);
+		draw();
+	}
 	public void draw(){
-		/*
-		g.clearRect(0,0,width,HEIGHT);
-
-		g.setColor(new Color(255,0,0)); //RED
-		Vector<Vector<Double>> xAxis=new Vector<Vector<Double>>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(100.0,0.0,0.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
-		g.drawLine((int)Math.round((Double)xAxis.x.x),(int)Math.round((Double)xAxis.x.y),(int)Math.round((Double)xAxis.y.x),(int)Math.round((Double)xAxis.y.y));
-
-		g.setColor(new Color(0,255,0)); //GREEN
-		Vector<Vector<Double>> yAxis=new Vector<Vector<Double>>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(0.0,100.0,0.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
-		g.drawLine((int)Math.round((Double)yAxis.x.x),(int)Math.round((Double)yAxis.x.y),(int)Math.round((Double)yAxis.y.x),(int)Math.round((Double)yAxis.y.y));
-
-		g.setColor(new Color(0,0,255)); //BLUE
-		Vector<Vector<Double>> zAxis=new Vector<Vector<Double>>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(0.0,0.0,100.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
-		g.drawLine((int)Math.round((Double)zAxis.x.x),(int)Math.round((Double)zAxis.x.y),(int)Math.round((Double)zAxis.y.x),(int)Math.round((Double)zAxis.y.y));
-
-		System.out.println(xAxis.toString());
-		System.out.println(yAxis.toString());
-		System.out.println(zAxis.toString());
-		 */
 		if(backbuffer == null) backbuffer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		if(backbuffer.getWidth() != getWidth() || backbuffer.getHeight() != getHeight()) backbuffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+
 		Graphics g = getGraphics();
 		Graphics bbg = backbuffer.getGraphics();
 		bbg.clearRect(0, 0, getWidth(), getHeight());
-		Agent top = null;
-		for(Agent a : pop.population) {
-			if(a.getFitness() == pop.getFittest()) {
-				top = a;
-				break;
-			}
-		}
-		if(top == null) top = pop.population.get(0);
-		int layercount = top.getGenome().getNetwork().getLayers().size();
-		int spread = (this.getWidth() - 70) / (layercount - 1);
-		int x = 25;
-		int lastySpread = 0;
-		int width = 25;
-		int height = 25;
-		for(Layer l : top.getGenome().getNetwork().getLayers()) {
-			int neuroncount = l.getNeurons().size();
-			int yspread = (this.getHeight() - 70) / (neuroncount - 1);
-			int y = 35;
-			for(Neuron n : l.getNeurons()) {
-				boolean selected = false;
-				Point pos = this.getMousePosition();
-				if(pos != null) selected = pos.x < x + width && pos.y < y + height && pos.x > x && pos.y > y;
-				if(selected) {
-					bbg.fillRect(x, y, width, height);
-				}
-				else bbg.drawRect(x, y, width, height);
 
-				if(l.getPrevious() != null) {
-					int tempY = 35;
-					for(Neuron nn : l.getPrevious().getNeurons()) {
-						if(selected) {
-							bbg.setColor(Color.red);
-							bbg.drawLine(x - spread + width, tempY + height/2, x, y + height/2);
-							bbg.setColor(Color.ORANGE);
-							bbg.drawString("" + n.getWeights().get(nn), x - (spread)/2 - 5, y - (y-tempY)/2 + 10);
-						} else {
-							bbg.drawLine(x - spread + width, tempY + height/2, x, y + height/2);
-						}
-						bbg.setColor(Color.white);
-						tempY += lastySpread;
-					}
-				}
-				y+=yspread;
-			}
-			lastySpread = yspread;
-			x+=spread;
-		}
+		bbg.setColor(new Color(255,0,0)); //RED
+		Vector<Vector<Double>> xAxis=new Vector<Vector<Double>>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(100.0,0.0,0.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
+		bbg.drawLine((int)Math.round((Double)xAxis.x.x),(int)Math.round((Double)xAxis.x.y),(int)Math.round((Double)xAxis.y.x),(int)Math.round((Double)xAxis.y.y));
+
+		bbg.setColor(new Color(0,255,0)); //GREEN
+		Vector<Vector<Double>> yAxis=new Vector<Vector<Double>>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(0.0,100.0,0.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
+		bbg.drawLine((int)Math.round((Double)yAxis.x.x),(int)Math.round((Double)yAxis.x.y),(int)Math.round((Double)yAxis.y.x),(int)Math.round((Double)yAxis.y.y));
+
+		bbg.setColor(new Color(0,0,255)); //BLUE
+		Vector<Vector<Double>> zAxis=new Vector<Vector<Double>>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(0.0,0.0,100.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
+		bbg.drawLine((int)Math.round((Double)zAxis.x.x),(int)Math.round((Double)zAxis.x.y),(int)Math.round((Double)zAxis.y.x),(int)Math.round((Double)zAxis.y.y));
 
 		g.drawImage(backbuffer, 0, 0, this);
+	}
+	public Population getPop() {
+		return pop;
+	}
+	public void setPop(Population pop) {
+		this.pop = pop;
+	}
+	public int getHeight(){
+		return this.HEIGHT;
+	}
+	public int getWidth(){
+		return this.WIDTH;
 	}
 }
 class Vector<E> extends Object{
@@ -232,6 +196,24 @@ class Vector<E> extends Object{
 		this.x=x;
 		this.y=y;
 		this.z=z;
+	}
+	protected void setX(E xVal){
+		this.x=xVal;
+	}
+	protected void setY(E yVal){
+		this.y=yVal;
+	}
+	protected void setZ(E zVal){
+		this.z=zVal;
+	}
+	protected E getX(){
+		return this.x;
+	}
+	protected E getY(){
+		return this.y;
+	}
+	protected E getZ(){
+		return this.z;
 	}
 	public String toString(){
 		String s=("("+this.x.toString()+","+this.y.toString()+","+this.z.toString()+")");
@@ -246,30 +228,38 @@ class Calc implements Runnable{
 		isRunning=true;
 		thread.start();
 	}
-	public Vector<Double> to2D(Vector<Double> point, Vector<Double> camera, Vector<Double> viewAngle){
+	protected Vector<Double> to2D(Vector<Double> point, Vector<Double> camera, Vector<Double> viewAngle){
 		double dX,dY,dZ;
 		double aX,aY,aZ;
 		double cX,cY,cZ; 
 		double thetaX,thetaY,thetaZ;
-		double eX,eY,eZ; //Keep equal to 'c'
+		double eX,eY,eZ;
 		double bX,bY;
+		//3D point in space
 		aX=point.x;
 		aY=point.y;
 		aZ=point.z;
+		//Camera position in space
 		cX=camera.x;
 		cY=camera.y;
 		cZ=camera.z;
+		//Camera angles (Tait-Bryan)
 		thetaX=viewAngle.x;
 		thetaY=viewAngle.y;
 		thetaZ=viewAngle.z;
-		eX=camera.x;
-		eY=camera.y;
+		//Position of viewers eye
+		eX=camera.x-400; //Change me later
+		eY=camera.y-300; //Change me later
+		//Keep this as 500 as it will affect the FOV (Can be changed later)
 		eZ=500;
+		//Calculations
 		dX=Math.cos(thetaY)*(Math.sin(thetaZ)*(aY-cY)+Math.cos(thetaZ)*(aX-cY))-Math.sin(thetaY)*(aZ-cZ);
 		dY=Math.sin(thetaX)*(Math.cos(thetaY)*(aZ-cZ)+Math.sin(thetaY)*(Math.sin(thetaZ)*(aY-cY)+Math.cos(thetaZ)*(aX-cX)))+Math.cos(thetaX)*(Math.cos(thetaZ)*(aY-cY)-Math.sin(thetaZ)*(aX-cX));
 		dZ=Math.cos(thetaX)*(Math.cos(thetaY)*(aZ-cZ)+Math.sin(thetaY)*(Math.sin(thetaZ)*(aY-cY)+Math.cos(thetaZ)*(aX-cX)))-Math.sin(thetaX)*(Math.cos(thetaZ)*(aY-cY)-Math.sin(thetaZ)*(aX-cX));
+		//These are the 2D points that were calculated
 		bX=((eZ/dZ)*dX)-eX;
 		bY=((eZ/dZ)*dY)-eY;
+		//Return the 2D point that was calculated
 		return new Vector<Double>(bX,bY,0.0);
 	}
 	@Override
@@ -282,12 +272,7 @@ class Calc implements Runnable{
 		return isRunning;
 	}
 	public boolean stop(){
-		try{
-			this.isRunning=false;
-			return true;
-		}catch (Exception e){
-			e.printStackTrace();
-		}
-		return false;
+		this.isRunning=false;
+		return true;
 	}
 }

@@ -111,8 +111,7 @@ public class TestGameJoust extends JFrame implements Runnable {
 			}
 			ticks = 0;
 			if(vis2d != null) {
-				vis2d.setPop(pop);
-				vis2d.draw();
+				vis2d.draw(pop);
 			}
 		}
 		if(ticks > 20 && !speedmode && input.getKey(KeyEvent.VK_ENTER)) {
