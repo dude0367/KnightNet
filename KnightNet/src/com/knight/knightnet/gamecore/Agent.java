@@ -53,6 +53,9 @@ public class Agent {
 	}
 	
 	public void changeFitness(double delta) {
+		if(getFitness() == getPopulation().getFittest()) {
+			getPopulation().setFittest(getFitness() + delta);
+		}
 		setFitness(getFitness() + delta);
 		if(getFitness() > getPopulation().getFittest()) {
 			getPopulation().setFittest(getFitness());

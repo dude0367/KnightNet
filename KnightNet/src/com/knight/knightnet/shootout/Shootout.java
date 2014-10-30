@@ -52,9 +52,9 @@ public class Shootout extends JFrame implements Runnable {
 		pop = new Population();
 		for(int i = 0; i < 50; i++) {
 			Agent a = new Agent(pop);
-			a.setGenome(new Genome(/*6*/5, 3, 3, 5));
+			a.setGenome(new Genome(5, 3, 3, 6));
 			Agent b = new Agent(pop);
-			b.setGenome(new Genome(5, 3, 3, 5));
+			b.setGenome(new Genome(5, 3, 3, 6));
 			agents.add(a);
 			agents.add(b);
 			games.add(new ShootGame(a,b, pop));
@@ -89,7 +89,7 @@ public class Shootout extends JFrame implements Runnable {
 	}
 	
 	private void writeTitle() {
-		this.setTitle("AI Shootout " + lastFPS + " FPS, APEX: " + pop.getFittest() + " (" + spectatingIndex + ")");
+		this.setTitle("AI Shootout " + lastFPS + " FPS, APEX: " + (int)pop.getFittest() + " (" + spectatingIndex + ")");
 	}
 
 	private void tick(long delta) {
@@ -180,9 +180,12 @@ public class Shootout extends JFrame implements Runnable {
 				bbg.setColor(Color.red);
 				spectatingIndex = i;
 				spectating = this.games.get(i);
+			} else {
+				bbg.setColor(new Color(100, apex > 0 ? apex < 155 / 4 ? 100 + (int) apex * 4 : 155 : 100, 
+						apex < 0 ? apex > -155 / 4 ? 100 - (int) apex * 4 - 1 : 155 : 100));
 			}
-			bbg.drawString( i + ": " + apex, 5, y + 11);
-			if(selected) bbg.setColor(Color.white);
+			bbg.drawString( i + ": " + (int)apex, 5, y + 11);
+			bbg.setColor(Color.white);
 		}
 		
 		g.drawImage(backbuffer, 0, 0, this);
@@ -196,7 +199,7 @@ public class Shootout extends JFrame implements Runnable {
 		double angle = t.getDirection();
 		if(cornerAngle == 0) cornerAngle = Math.atan(Tank.height / Tank.width);
 		Point a = new Point(), b = new Point(), c = new Point(), d = new Point(), e = new Point();
-		Point f = new Point(), gg = new Point();
+		Point f = new Point(), gg = new Point(), h = new Point();
 		a.setLocation(x + xShift * Math.cos(cornerAngle + angle), y + yShift * Math.sin(cornerAngle + angle));
 		d.setLocation(x + xShift * Math.cos(cornerAngle + angle + Math.PI/2), y + yShift * Math.sin(cornerAngle + angle + Math.PI/2));
 		c.setLocation(x + xShift * Math.cos(cornerAngle + angle + Math.PI), y + yShift * Math.sin(cornerAngle + angle + Math.PI));
@@ -206,8 +209,18 @@ public class Shootout extends JFrame implements Runnable {
 		//FOV
 		f.setLocation(x + 1000 * Math.cos(angle + t.getFOV() / 2), y + 1000 * Math.sin(angle + t.getFOV() / 2));
 		gg.setLocation(x + 1000 * Math.cos(angle - t.getFOV() / 2), y + 1000 * Math.sin(angle - t.getFOV() / 2));
+		Tank ot = t.getShootgame().getOtherTank(t);
+		double angleToEnemy = ((t.getX() > ot.getX() ? 1 : 0) * Math.PI) + Math.atan((t.getY() - ot.getY()) / (t.getX() - ot.getX()));
+		boolean pointingAtEnemy = (t.getDirection() + t.getFOV()/2) > angleToEnemy && (t.getDirection() - t.getFOV()/2) < angleToEnemy;
+		h.setLocation(x + 100 * Math.cos(angleToEnemy), y + 100 * Math.sin(angleToEnemy));
+		if(pointingAtEnemy) {
+			g.setColor(Color.RED);
+		} else {
+			g.setColor(Color.GRAY);
+		}
 		
-		g.setColor(Color.GRAY);
+		g.drawLine(x, y, h.x, h.y);
+		
 		g.drawLine(x, y, f.x, f.y);
 		g.drawLine(x, y, gg.x, gg.y);
 		g.setColor(Color.WHITE);

@@ -15,9 +15,11 @@ public class ShootGame {
 		getPlayers()[0] = new Tank(a, pop);
 		getPlayers()[0].setX(50);
 		getPlayers()[0].setY(Shootout.shootout.getHeight()/2);
+		getPlayers()[0].setShootgame(this);
 		getPlayers()[1] = new Tank(b, pop);
 		getPlayers()[1].setX(Shootout.shootout.getWidth() - 50);
 		getPlayers()[1].setY(Shootout.shootout.getHeight()/2);
+		getPlayers()[1].setShootgame(this);
 		getPlayers()[1].setDirection(Math.PI);
 	}
 	
@@ -30,6 +32,10 @@ public class ShootGame {
 			Tank t = players[i];
 			Tank tt = players[o];
 			localApex = (t.getFitness() > localApex) ? t.getFitness() : localApex;
+			
+			if(t.getDirection() > 2 * Math.PI) t.changeDirection(-2 * Math.PI);
+			if(t.getDirection() < 0) t.changeDirection(2 * Math.PI);
+			
 			double xVec = t.getX() - tt.getX();
 			double yVec = t.getY() - tt.getY();
 			double dist = Math.sqrt(Math.pow(xVec, 2) + Math.pow(yVec, 2));
@@ -47,9 +53,11 @@ public class ShootGame {
 					dist = tempDist;
 				}
 			}
-			double angleToEnemy = Math.atan((t.getX() - tt.getX()) / (t.getY() - tt.getY()));
+			double angleToEnemy = ((t.getX() > tt.getX() ? 1 : 0) * Math.PI) + Math.atan((t.getY() - tt.getY()) / (t.getX() - tt.getX()));
 			boolean pointingAtEnemy = (t.getDirection() + t.getFOV()/2) > angleToEnemy && (t.getDirection() - t.getFOV()/2) < angleToEnemy;
-			
+			if(pointingAtEnemy) {
+				//t.changeFitness(.1);
+			}
 			double output[] = players[i].getGenome().getNetwork().process(new double[] {
 					xVec, yVec, Math.cos(t.getDirection()), 
 					Math.sin(t.getDirection()), bxVec, byVec,
@@ -66,6 +74,8 @@ public class ShootGame {
 			if(t.getY() > Shootout.shootout.getHeight()) t.setY(Shootout.shootout.getHeight());
 			if(output[2] > .5 && t.getCannonCooldown() <= 0) {
 				bullets.add(t.fire());
+				if(pointingAtEnemy) t.changeFitness(2);
+				else t.changeFitness(-.4);
 				t.setCannonCooldown(20);
 			}
 			t.coolCannon(0.1 * delta);
@@ -135,5 +145,9 @@ public class ShootGame {
 
 	public void setLocalApex(double localApex) {
 		this.localApex = localApex;
+	}
+
+	public Tank getOtherTank(Tank t) {
+		return players[0] == t ? players[1] : players[0];
 	}
 }

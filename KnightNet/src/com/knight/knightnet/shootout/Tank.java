@@ -15,6 +15,8 @@ public class Tank extends Agent {
 	private double cannonCooldown = 0;
 	private double FOV = Math.PI / 10;
 	
+	private ShootGame shootgame;
+	
 	public Tank(Agent a, Population pop) {
 		super(a, pop);
 	}
@@ -65,6 +67,14 @@ public class Tank extends Agent {
 
 	public double getFOV() {
 		return this.FOV;
+	}
+
+	public ShootGame getShootgame() {
+		return shootgame;
+	}
+
+	public void setShootgame(ShootGame shootgame) {
+		this.shootgame = shootgame;
 	}
 
 }
