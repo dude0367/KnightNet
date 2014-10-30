@@ -43,7 +43,7 @@ public class Visualizer extends Visualizer2D{
 	protected static Calc calc;
 	protected static Vector<Double> camera;
 	protected static Vector<Double> view;
-	Visualizer(){
+	public Visualizer(){
 		calc=new Calc();
 		camera=new Vector<Double>(200.0,200.0,200.0);
 		view=new Vector<Double>(0.0,0.0,0.0);
@@ -239,7 +239,6 @@ class Vector<E> extends Object{
 	}
 }
 class Calc implements Runnable{
-	private static final long serialVersionUID = 1L;
 	private boolean isRunning=false;
 	private Thread thread;
 	Calc(){

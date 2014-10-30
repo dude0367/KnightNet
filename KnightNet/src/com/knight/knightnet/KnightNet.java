@@ -77,8 +77,8 @@ public class KnightNet {
 					shootgame.startgame();
 					out = "Starting Shootout game";
 				}else if(in.equalsIgnoreCase("visualizer") || in.equalsIgnoreCase("vis")) {
-					//vis = new Visualizer();
-					Visualizer.createVisualizer();
+					vis = new Visualizer();
+					//Visualizer.createVisualizer();
 					out = "Starting Visualizer";
 				}
 
