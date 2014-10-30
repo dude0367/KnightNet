@@ -26,7 +26,12 @@ public class Visualizer2D extends JFrame {
 	
 	public Visualizer2D(Population p) {
 		this();
-		pop = p;
+		this.setPop(pop);
+	}
+	
+	public void draw(Population pop) {
+		this.setPop(pop);
+		draw();
 	}
 	
 	public void draw() {
