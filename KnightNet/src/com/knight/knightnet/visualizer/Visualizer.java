@@ -311,6 +311,45 @@ class Calc implements Runnable{
 		//Return the 2D point that was calculated
 		return new Vector<Double>(bX,bY,0.0);
 	}
+	//http://www.eng.utah.edu/~cs6360/Lectures/frustum.pdf <-Read Me
+	protected double[] BuildPerspProjMat(double fov, double aspect, double znear, double zfar){ //http://stackoverflow.com/questions/8633034/basic-render-3d-perspective-projection-onto-2d-screen-with-camera-without-openg
+		double m[]=new double[16];
+		double xymax = znear * Math.tan(fov * (Math.PI/360.0));
+		double ymin = -xymax;
+		double xmin = -xymax;
+		
+		double width = xymax - xmin;
+		double height = xymax - ymin;
+		
+		double depth = zfar - znear;
+		double q = -(zfar + znear) / depth;
+		double qn = -2 * (zfar * znear) / depth;
+		
+		double w = 2 * znear / width;
+		w = w / aspect;
+		double h = 2 * znear / height;
+		
+		m[0]  = w;
+		m[1]  = 0.0;
+		m[2]  = 0.0;
+		m[3]  = 0.0;
+		
+		m[4]  = 0.0;
+		m[5]  = h;
+		m[6]  = 0.0;
+		m[7]  = 0.0;
+		
+		m[8]  = 0.0;
+		m[9]  = 0.0;
+		m[10] = q;
+		m[11] = -1.0;
+		
+		m[12] = 0.0;
+		m[13] = 0.0;
+		m[14] = qn;
+		m[15] = 0.0;
+		return m;
+	}
 	@Override
 	public void run() {
 		while(this.isRunning){
