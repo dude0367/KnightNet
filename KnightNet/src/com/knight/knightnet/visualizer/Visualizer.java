@@ -17,6 +17,8 @@ import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 
 import com.knight.knightnet.network.Population;
+//http://en.wikipedia.org/wiki/3D_projection <-Basic concept
+
 //http://freespace.virgin.net/hugo.elias/routines/3d_to_2d.htm
 
 //http://en.wikipedia.org/wiki/Triangulation <-Read me
@@ -29,11 +31,20 @@ import com.knight.knightnet.network.Population;
 
 //http://gamedev.stackexchange.com/questions/28599/3d-first-person-movement
 
-//http://stackoverflow.com/questions/18158238/how-to-make-a-camera-move-in-the-direction-it-is-facing-in-java <-THANK YOU!!!
+//http://stackoverflow.com/questions/18158238/how-to-make-a-camera-move-in-the-direction-it-is-facing-in-java <-Info for movement of camera
 
 //http://stackoverflow.com/questions/701504/perspective-projection-help-a-noob
 
-//http://www.dreamincode.net/forums/topic/239174-3d-perspective-projection/ <-Very helpful
+//http://www.dreamincode.net/forums/topic/239174-3d-perspective-projection/ <-Very helpful for actual calculations and stuff
+
+//http://docs.opencv.org/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html <-README
+
+//http://stackoverflow.com/questions/724219/how-to-convert-a-3d-point-into-2d-perspective-projection
+
+//http://users.ece.gatech.edu/lanterma/mpg10/mpglecture04f10_3dto2dproj.pdf <-This is what I want
+
+//http://www.codeincodeblock.com/2012/03/projecting-3d-world-co-ordinates-into.html <-Useful site
+
 public class Visualizer extends JFrame{
 	private static final long serialVersionUID = 13374208008135L;
 	private final int HEIGHT=600;
@@ -45,75 +56,100 @@ public class Visualizer extends JFrame{
 	protected BufferedImage backbuffer;
 
 	public Visualizer(){
-		this.setTitle("ANN Visualizer");
-		calc=new Calc();
-		camera=new Vector<Double>(200.0,200.0,200.0);
+		this.setTitle("Visualizer");
+		calc=new Calc(this);
+		camera=new Vector<Double>(0.0,0.0,500.0);
 		view=new Vector<Double>(0.0,0.0,0.0);
 
 		setSize(WIDTH,HEIGHT);
+		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		setVisible(true);
 		addKeyListener(new KeyListener(){
 			@Override
 			public void keyPressed(KeyEvent e){
-				double y = view.x;
-				double p = view.y;
-				double k = 5.0;
-				double xzLength = Math.cos(p) * k;
-				double dx = xzLength * Math.cos(y);
-				double dz = xzLength * Math.sin(y);
-				double dy = k * Math.sin(p);
+				double k = 5.0; //Distance to move
+				
+				double y = view.x; //X Angle View **YAW
+				double p = view.y; //Y Angle View **PITCH
+				double xzLength = Math.cos(p) * k; //Calculated Distance
+				double dx = xzLength * Math.cos(y); //Distance to move about the X
+				double dz = xzLength * Math.sin(y); //Distance to move about the Z
+				double dy = k * Math.sin(p); //Distance to move about the Y **Note that this is usually not changed unless roll is changed
+				
+				double horY = view.x+(Math.PI); //X Angle View **YAW
+				double horP = view.y; //Y Angle View **PITCH
+				double horXZLength = Math.cos(horP) * k; //Calculated Distance
+				double horDX = horXZLength * Math.cos(horY); //Distance to move about the X
+				double horDZ = horXZLength * Math.sin(horY); //Distance to move about the Z
+				double horDY = k * Math.sin(horP); //Distance to move about the Y **Note that this is usually not changed unless roll is changed
+				
 				switch (e.getKeyCode()){
-				case KeyEvent.VK_W:
-					view.x+=Math.toRadians(1);
+				case KeyEvent.VK_W: //If the "w" key is down
+					view.x+=Math.toRadians(1); //Rotate about the "X" axis
 					draw();
 					break;
-				case KeyEvent.VK_A:
-					view.y+=Math.toRadians(1);
+				case KeyEvent.VK_A: //If the "a" key is down
+					view.y+=Math.toRadians(1); //Rotate about the "Y" axis
 					draw();
 					break;
-				case KeyEvent.VK_S:
-					view.x-=Math.toRadians(1);
+				case KeyEvent.VK_S: //If the "s" key is down
+					view.x-=Math.toRadians(1); //Rotate about the "X" axis
 					draw();
 					break;
-				case KeyEvent.VK_D:
-					view.y-=Math.toRadians(1);
+				case KeyEvent.VK_D: //If the "d" key is down
+					view.y-=Math.toRadians(1); //Rotate about the "Y" axis
 					draw();
 					break;
-				case KeyEvent.VK_Q:
-					view.z+=Math.toRadians(1);
+				case KeyEvent.VK_Q: //If the "q" key is down
+					view.z+=Math.toRadians(1); //Rotate about the "Z" axis
 					draw();
 					break;
-				case KeyEvent.VK_E:
-					view.z-=Math.toRadians(1);
+				case KeyEvent.VK_E: //If the "e" key is down
+					view.z-=Math.toRadians(1); //Rotate about the "Z" axis
 					draw();
 					break;
-				case KeyEvent.VK_UP:
+				case KeyEvent.VK_UP: //If the UP key is down
+					//Move forwards
 					camera.x += dx;
-					camera.y += dy;
+					camera.y += dy; //This usually will not change
 					camera.z += dz;
 					draw();
 					break;
-					/*case KeyEvent.VK_LEFT:
-					camera.x += dx;
-					camera.y += dy;
-					camera.z += dz;
-					repaint();
-					break;*/
-				case KeyEvent.VK_DOWN:
+				case KeyEvent.VK_LEFT: //If the LEFT key is down
+					//Move left
+					camera.x += horDX;
+					camera.y += horDY; //This usually will not change
+					camera.z += horDZ;
+					draw();
+					break;
+				case KeyEvent.VK_DOWN: //If the DOWN key is down
+					//Move backwards
 					camera.x -= dx;
-					camera.y -= dy;
+					camera.y -= dy; //This usually will not change
 					camera.z -= dz;
 					draw();
 					break;
-					/*case KeyEvent.VK_RIGHT:
-					camera.x += dx;
-					camera.y += dy;
-					camera.z += dz;
-					repaint();
-					break;*/
-				case KeyEvent.VK_R:
+				case KeyEvent.VK_RIGHT: //If the RIGHT key is down
+					//Move right
+					camera.x -= horDX;
+					camera.y -= horDY; //This usually will not change
+					camera.z -= horDZ;
+					draw();
+					break;
+				case KeyEvent.VK_SPACE: //If the SPACEBAR key is down
+					//Move up
+					camera.y += k;
+					draw();
+					break;
+				case KeyEvent.VK_SHIFT: //If the SHIFT key is down
+					//Move down
+					camera.y -= k;
+					draw();
+					break;
+				case KeyEvent.VK_R: //If the "r" key is down
+					//Reset view angles and camera
 					camera.x=0.0;
 					camera.y=0.0;
 					camera.z=0.0;
@@ -165,15 +201,26 @@ public class Visualizer extends JFrame{
 		bbg.setColor(new Color(255,0,0)); //RED
 		Vector<Vector<Double>> xAxis=new Vector<Vector<Double>>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(100.0,0.0,0.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
 		bbg.drawLine((int)Math.round((Double)xAxis.x.x),(int)Math.round((Double)xAxis.x.y),(int)Math.round((Double)xAxis.y.x),(int)Math.round((Double)xAxis.y.y));
-
+		bbg.drawString("X",(int)Math.round((Double)xAxis.y.x),(int)Math.round((Double)xAxis.y.y));
+		
 		bbg.setColor(new Color(0,255,0)); //GREEN
 		Vector<Vector<Double>> yAxis=new Vector<Vector<Double>>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(0.0,100.0,0.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
 		bbg.drawLine((int)Math.round((Double)yAxis.x.x),(int)Math.round((Double)yAxis.x.y),(int)Math.round((Double)yAxis.y.x),(int)Math.round((Double)yAxis.y.y));
-
+		bbg.drawString("Y",(int)Math.round((Double)yAxis.y.x),(int)Math.round((Double)yAxis.y.y));
+		
 		bbg.setColor(new Color(0,0,255)); //BLUE
 		Vector<Vector<Double>> zAxis=new Vector<Vector<Double>>(calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view),calc.to2D(new Vector<Double>(0.0,0.0,100.0), camera, view), new Vector<Double>(0.0,0.0,0.0));
 		bbg.drawLine((int)Math.round((Double)zAxis.x.x),(int)Math.round((Double)zAxis.x.y),(int)Math.round((Double)zAxis.y.x),(int)Math.round((Double)zAxis.y.y));
+		bbg.drawString("Z",(int)Math.round((Double)zAxis.y.x),(int)Math.round((Double)zAxis.y.y));
+		
+		bbg.setColor(new Color(255,0,255)); //PURPLE
+		Vector<Double> toCam=calc.to2D(new Vector<Double>(0.0,0.0,0.0), camera, view);
+		bbg.drawLine((int)Math.round((Double)toCam.x),(int)Math.round((Double)toCam.y),this.getWidth()/2, this.getHeight()/2);
 
+		bbg.setColor(new Color(255,255,255));
+		bbg.drawString(camera.toString(), 20, 40);
+		bbg.drawString(view.toString(), 20, 60);
+		
 		g.drawImage(backbuffer, 0, 0, this);
 	}
 	public Population getPop() {
@@ -222,8 +269,10 @@ class Vector<E> extends Object{
 }
 class Calc implements Runnable{
 	private boolean isRunning=false;
-	private Thread thread;
-	Calc(){
+	private Thread thread=null;
+	protected Visualizer superior=null;
+	Calc(Visualizer superior){
+		this.superior=superior;
 		thread = new Thread(this);
 		isRunning=true;
 		thread.start();
@@ -240,16 +289,16 @@ class Calc implements Runnable{
 		aY=point.y;
 		aZ=point.z;
 		//Camera position in space
-		cX=camera.x;
-		cY=camera.y;
+		cX=camera.x;//+superior.getWidth()/2;
+		cY=camera.y;//+superior.getHeight()/2;
 		cZ=camera.z;
 		//Camera angles (Tait-Bryan)
 		thetaX=viewAngle.x;
 		thetaY=viewAngle.y;
 		thetaZ=viewAngle.z;
 		//Position of viewers eye
-		eX=camera.x-400; //Change me later
-		eY=camera.y-300; //Change me later
+		eX=camera.x-superior.getWidth()/2; //Change me later
+		eY=camera.y-superior.getHeight()/2; //Change me later
 		//Keep this as 500 as it will affect the FOV (Can be changed later)
 		eZ=500;
 		//Calculations
