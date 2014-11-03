@@ -224,7 +224,7 @@ public class Visualizer extends JFrame{
 		g.drawImage(backbuffer, 0, 0, this);
 	}
 	public Population getPop() {
-		return pop;
+		return this.pop;
 	}
 	public void setPop(Population pop) {
 		this.pop = pop;
@@ -273,9 +273,9 @@ class Calc implements Runnable{
 	protected Visualizer superior=null;
 	Calc(Visualizer superior){
 		this.superior=superior;
-		thread = new Thread(this);
-		isRunning=true;
-		thread.start();
+		this.thread = new Thread(this);
+		this.isRunning=true;
+		this.thread.start();
 	}
 	protected Vector<Double> to2D(Vector<Double> point, Vector<Double> camera, Vector<Double> viewAngle){
 		double dX,dY,dZ;
@@ -357,7 +357,7 @@ class Calc implements Runnable{
 		}
 	}
 	public boolean isRunning() {
-		return isRunning;
+		return this.isRunning;
 	}
 	public boolean stop(){
 		this.isRunning=false;
