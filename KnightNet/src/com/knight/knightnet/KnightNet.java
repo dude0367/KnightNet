@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import com.knight.knightnet.joust.TestGameJoust;
 import com.knight.knightnet.network.Network;
 import com.knight.knightnet.pong.Pong;
+import com.knight.knightnet.reader.Reader;
 import com.knight.knightnet.shootout.Shootout;
 import com.knight.knightnet.visualizer.Visualizer;
 
@@ -25,6 +26,7 @@ public class KnightNet {
 	static TestGameJoust joustgame;
 	static Shootout shootgame;
 	static Visualizer vis;
+	static Reader reader;
 
 	public static void main(String args[]) {//ENTRY POINT TO TEST NETWORK
 		Network network = new Network(1, 2, 2, 3);/*Create network with 1 hidden layer, 
@@ -76,10 +78,13 @@ public class KnightNet {
 					shootgame = new Shootout();
 					shootgame.startgame();
 					out = "Starting Shootout game";
-				}else if(in.equalsIgnoreCase("visualizer") || in.equalsIgnoreCase("vis")) {
+				} else if(in.equalsIgnoreCase("visualizer") || in.equalsIgnoreCase("vis")) {
 					vis = new Visualizer();
 					//Visualizer.createVisualizer();
 					out = "Starting Visualizer";
+				} else if(in.equalsIgnoreCase("reader") || in.equalsIgnoreCase("read")) {
+					reader = new Reader();
+					out = "Starting Reader";
 				}
 
 				else {

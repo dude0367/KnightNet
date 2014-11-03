@@ -8,10 +8,10 @@ import com.knight.knightnet.network.Neuron;
 
 public class Genome {
 	
-	private int hiddenLayers = 1;
-	private int neuronsPerLayer = 3;
-	private int outputNeurons;
-	private int inputNeurons;
+	protected int hiddenLayers = 1;
+	protected int neuronsPerLayer = 3;
+	protected int outputNeurons;
+	protected int inputNeurons;
 	protected Network network;
 	protected static double mutationRate = 0.1;
 	protected double crossOverRate = .7;
@@ -23,6 +23,11 @@ public class Genome {
 		this.setHiddenLayers(hiddenLayers);
 		this.setNeuronsPerLayer(neuronsPerLayer);
 		network = new Network(hiddenLayers,inputNeurons, outputNeurons, neuronsPerLayer);
+	}
+	
+	public Genome(int inputNeurons, int outputNeurons) {
+		this.setOutputNeurons(outputNeurons);
+		this.setInputNeurons(inputNeurons);
 	}
 	
 	public Genome(ArrayList<Double> weight, int inputNeurons, int outputNeurons, int hiddenLayers, int neuronsPerLayer) {
@@ -44,6 +49,25 @@ public class Genome {
 			ArrayList<Double> g1weights = new ArrayList<Double>();
 			ArrayList<Double> g2weights = new ArrayList<Double>();
 			for(int i = 0; i < g1.weights.size(); i++) {
+				if(Math.random() < .5) {
+					if(Math.random() > mutationRate) {
+						g1weights.add(g1.weights.get(i));
+						g2weights.add(g2.weights.get(i));
+					} else {
+						g1weights.add(g1.weights.get(i) + (Math.random() - .5) * 2);
+						g2weights.add(g2.weights.get(i) + (Math.random() - .5) * 2);
+					}
+				} else {
+					if(Math.random() > mutationRate) {
+						g1weights.add(g2.weights.get(i));
+						g2weights.add(g1.weights.get(i));
+					} else {
+						g1weights.add(g2.weights.get(i) + (Math.random() - .5) * 2);
+						g2weights.add(g1.weights.get(i) + (Math.random() - .5) * 2);
+					}
+				}
+			}
+			/*for(int i = 0; i < g1.weights.size(); i++) {
 				if(Math.random() > mutationRate) {
 					g1weights.add((g1.weights.get(i) + g2.weights.get(i))/2);
 					g2weights.add((g1.weights.get(i) + g2.weights.get(i))/2);
@@ -51,7 +75,7 @@ public class Genome {
 					g1weights.add((g1.weights.get(i) + g2.weights.get(i))/2 + (Math.random() - .5) * 2);
 					g2weights.add((g1.weights.get(i) + g2.weights.get(i))/2 + (Math.random() - .5) * 2);
 				}
-			}
+			}*/
 			/*for(int i = 0; i < toSwitch; i++) {
 				if(Math.random() > mutationRate) {
 					g1weights.add(g2.weights.get(i));

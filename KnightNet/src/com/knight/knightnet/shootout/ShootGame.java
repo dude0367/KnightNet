@@ -61,7 +61,7 @@ public class ShootGame {
 			double output[] = players[i].getGenome().getNetwork().process(new double[] {
 					xVec, yVec, Math.cos(t.getDirection()), 
 					Math.sin(t.getDirection()), bxVec, byVec,
-					pointingAtEnemy ? 1 : 0
+					pointingAtEnemy ? 10 : 0
 			});
 			t.changeDirection(output[0] - .5);
 			output[1] -= .5;
