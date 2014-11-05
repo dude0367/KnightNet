@@ -13,10 +13,10 @@ public class GenomeCode extends Genome {
 	private int outputNeurons;
 	private int inputNeurons;
 	protected Network network;
-	protected static double mutationRate = 0.1;
+	protected double mutationRate = 0.1;
 	protected double crossOverRate = .7;
 	protected ArrayList<Double> weights = new ArrayList<Double>();
-	protected int code[] = new int[8 + 16 * 16 * 16];
+	protected int code[] = new int[8 + 16 * 16 * 16 * 16];
 	//http://homepages.inf.ed.ac.uk/pkoehn/publications/gann94.pdf
 	/* Code Plan (Binary):
 	 * First 4: # of layers (+1 (can't be 0))
@@ -48,7 +48,7 @@ public class GenomeCode extends Genome {
 				code[i+4] = Integer.valueOf(neurons.substring(i- (4 - neurons.length()), i+1-(4 - neurons.length())));
 			}
 		}
-		for(int i = 8; i < 8 + 16 * 16 * 16; i++) {
+		for(int i = 8; i < 8 + 16 * 16 * 16 * 16; i++) {
 			code[i] = Math.random() < .5 ? 1 : 0;
 		}
 		network = new Network(hiddenLayers,inputNeurons, outputNeurons, neuronsPerLayer);
@@ -56,9 +56,43 @@ public class GenomeCode extends Genome {
 		System.out.println("Created");
 	}
 	
-	public static GenomeCode[] crossover(GenomeCode g1, GenomeCode g2) {
-		GenomeCode[] out = new GenomeCode[2];
-		
+	public GenomeCode(int inputNeurons, int outputNeurons, int code[]) {
+		super(inputNeurons, outputNeurons);
+		int hiddenLayers = 0;
+		int neuronsPerLayer = 0;
+		int mult = 1;
+		for(int i = 3; i >=0; i--) {
+			hiddenLayers += mult * code[i];
+			neuronsPerLayer += mult * code[i + 4];
+			mult *= 2;
+		}
+		this.setHiddenLayers(hiddenLayers);
+		this.setNeuronsPerLayer(neuronsPerLayer);
+		this.code = code;
+		network = new Network(hiddenLayers,inputNeurons, outputNeurons, neuronsPerLayer);
+		network.fillWeights(code);
+	}
+	
+	public static GenomeCode crossover(GenomeCode g1, GenomeCode g2) {
+		//GenomeCode[] out = new GenomeCode[2];
+		GenomeCode out = null;
+		int code[] = new int[g1.code.length];
+		for(int i = 0; i < g1.code.length; i++) {
+			if(Math.random() < .5) {
+				if(Math.random() > g1.mutationRate) {
+					code[i] = g1.code[i];
+				} else {
+					code[i] = (int) (g1.code[i] + (Math.random() - .5) * 4);
+				}
+			} else {
+				if(Math.random() > g1.mutationRate) {
+					code[i] = g2.code[i];
+				} else {
+					code[i] = (int) (g2.code[i] + (Math.random() - .5) * 4);
+				}
+			}
+		}
+		out = new GenomeCode(g1.inputNeurons, g1.outputNeurons, code);
 		return out;
 	}
 	

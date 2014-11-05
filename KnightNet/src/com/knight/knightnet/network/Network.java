@@ -23,6 +23,8 @@ public class Network {
 	
 	public void populate(ArrayList<Double> weights) {
 		ArrayList<Neuron> neurons = getNeurons();
+		System.out.println("Weight size: " + weights.size());
+		System.out.println("Neurons: " + neurons.size());
 		for(Neuron n : neurons) {
 			for(Neuron nn : n.weights.keySet()) {
 				n.weights.put(nn, weights.get(0));
@@ -65,7 +67,7 @@ public class Network {
 
 	public void fillWeights(int[] code) {
 		ArrayList<Double> weights = new ArrayList<Double>();
-		for(int i = 8; i < 8 + 16 * 16 * 16; i += 16) {
+		for(int i = 8; i < 8 + 16 * 16 * 16 * 16; i += 16) {
 			double d = 0;
 			int mult = 1;
 			for(int o = 1; o < 6; o++) {
@@ -80,7 +82,6 @@ public class Network {
 			d *= code[i] == 1 ? 1 : -1; //Make negative or nah
 			weights.add(d);
 		}
-		System.out.println("Weight size: " + weights.size());
 		populate(weights);
 	}
 

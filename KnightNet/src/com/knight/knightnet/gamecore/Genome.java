@@ -1,7 +1,6 @@
 package com.knight.knightnet.gamecore;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import com.knight.knightnet.network.Network;
 import com.knight.knightnet.network.Neuron;
