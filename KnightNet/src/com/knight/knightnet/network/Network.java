@@ -27,6 +27,10 @@ public class Network {
 		//System.out.println("Neurons: " + neurons.size());
 		for(Neuron n : neurons) {
 			for(Neuron nn : n.weights.keySet()) {
+				if(weights.size() == 0) {
+					System.out.println("Weight size: " + weights.size());
+					System.out.println("Neurons: " + neurons.size());
+				}
 				n.weights.put(nn, weights.get(0));
 				weights.remove(0);
 			}

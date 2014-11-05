@@ -9,7 +9,7 @@ import com.knight.knightnet.gamecore.Genome;
 public class Population {
 
 	public ArrayList<Agent> population;// = new ArrayList<Agent>();
-	private double fittest = 1;
+	protected double fittest = 1;
 
 	public Population(ArrayList<Agent> agents) {
 		population = agents;

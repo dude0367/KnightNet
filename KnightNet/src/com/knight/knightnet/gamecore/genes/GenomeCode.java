@@ -33,8 +33,8 @@ public class GenomeCode extends Genome {
 	public GenomeCode(int inputNeurons, int outputNeurons) {
 		super(inputNeurons, outputNeurons);
 		Random rand = new Random();
-		int hiddenLayers = rand.nextInt(15) + 1;
-		int neuronsPerLayer = rand.nextInt(15) + 1;
+		int hiddenLayers = rand.nextInt(14) + 1;
+		int neuronsPerLayer = rand.nextInt(14) + 1;
 		this.setHiddenLayers(hiddenLayers);
 		this.setNeuronsPerLayer(neuronsPerLayer);
 		
@@ -53,7 +53,7 @@ public class GenomeCode extends Genome {
 		}
 		network = new Network(hiddenLayers,inputNeurons, outputNeurons, neuronsPerLayer);
 		network.fillWeights(code);
-		System.out.println("Created");
+		//System.out.println("Created");
 	}
 	
 	public GenomeCode(int inputNeurons, int outputNeurons, int code[]) {
@@ -66,6 +66,8 @@ public class GenomeCode extends Genome {
 			neuronsPerLayer += mult * code[i + 4];
 			mult *= 2;
 		}
+		if(hiddenLayers > 10) hiddenLayers = 10;
+		if(neuronsPerLayer > 10) neuronsPerLayer = 10;
 		this.setHiddenLayers(hiddenLayers);
 		this.setNeuronsPerLayer(neuronsPerLayer);
 		this.code = code;
