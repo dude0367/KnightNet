@@ -271,6 +271,7 @@ class Calc implements Runnable{
 	private boolean isRunning=false;
 	private Thread thread=null;
 	protected Visualizer superior=null;
+	protected double m[]=new double[16];
 	Calc(Visualizer superior){
 		this.superior=superior;
 		this.thread = new Thread(this);
@@ -312,8 +313,10 @@ class Calc implements Runnable{
 		return new Vector<Double>(bX,bY,0.0);
 	}
 	//http://www.eng.utah.edu/~cs6360/Lectures/frustum.pdf <-Read Me
+	
+	//http://stackoverflow.com/questions/8633034/basic-render-3d-perspective-projection-onto-2d-screen-with-camera-without-openg THIS IS THE LINK
 	protected double[] BuildPerspProjMat(double fov, double aspect, double znear, double zfar){ //http://stackoverflow.com/questions/8633034/basic-render-3d-perspective-projection-onto-2d-screen-with-camera-without-openg
-		double m[]=new double[16];
+		
 		double xymax = znear * Math.tan(fov * (Math.PI/360.0));
 		double ymin = -xymax;
 		double xmin = -xymax;
@@ -349,6 +352,35 @@ class Calc implements Runnable{
 		m[14] = qn;
 		m[15] = 0.0;
 		return m;
+	}
+	/*Thus, for a point p, we would:
+
+	Perform model transformation matrix * p, resulting in pm.
+	Perform projection matrix * pm, resulting in pp.
+	Clipping pp against the viewing volume.
+	Perform viewport transformation matrix * pp, resulting is ps: point on screen.
+	*/
+	protected void makeFrustum(double fovY, double aspectRatio, double front, double back){
+	    double DEG2RAD = 3.14159265 / 180;
+
+	    double tangent = Math.tan(fovY/2 * DEG2RAD);   // tangent of half fovY
+	    double height = front * tangent;          // half height of near plane
+	    double width = height * aspectRatio;      // half width of near plane
+
+	    // params: left, right, bottom, top, near, far
+	    setFrustum(-width, width, -height, height, front, back);
+	}
+	//This is glfrustrum
+	protected void setFrustum(double width, double width2, double height, double height2, double front, double back){
+	    //m.identity();
+	    m[0]  = 2 * front / (width2 - width);
+	    m[2]  = (width2 + width) / (width2 - width);
+	    m[5]  = 2 * front / (height2 - height);
+	    m[6]  = (height2 + height) / (height2 - height);
+	    m[10] = -(back + front) / (back - front);
+	    m[11] = -(2 * back * front) / (back - front);
+	    m[14] = -1;
+	    m[15] = 0;
 	}
 	@Override
 	public void run() {
