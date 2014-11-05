@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import com.knight.knightnet.island.Island;
 import com.knight.knightnet.joust.TestGameJoust;
 import com.knight.knightnet.network.Network;
 import com.knight.knightnet.pong.Pong;
@@ -27,6 +28,7 @@ public class KnightNet {
 	static TestGameJoust joustgame;
 	static Shootout shootgame;
 	static Visualizer vis;
+	static Island island;
 	static Reader reader;
 	
 	static GenomeCodeTester codetester;
@@ -85,6 +87,10 @@ public class KnightNet {
 					vis = new Visualizer();
 					//Visualizer.createVisualizer();
 					out = "Starting Visualizer";
+				} else if(in.equalsIgnoreCase("island") || in.equalsIgnoreCase("is")) {
+					island = new Island();
+					//Visualizer.createVisualizer();
+					out = "Starting AI Island";
 				} else if(in.equalsIgnoreCase("reader") || in.equalsIgnoreCase("read")) {
 					reader = new Reader();
 					out = "Starting Reader";

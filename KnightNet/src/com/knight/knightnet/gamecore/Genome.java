@@ -34,7 +34,7 @@ public class Genome {
 		network.populate(weight);
 	}
 	
-	public static Genome[] crossover(Genome g1, Genome g2) {
+	public static Genome crossover(Genome g1, Genome g2) {
 		Genome[] out = new Genome[2];
 		g1.findWeights();
 		g2.findWeights();
@@ -99,7 +99,7 @@ public class Genome {
 		}
 		g1.weights.clear();
 		g2.weights.clear();
-		return out;
+		return out[1];
 	}
 	
 	public void findWeights() {

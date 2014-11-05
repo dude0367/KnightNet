@@ -23,8 +23,8 @@ public class Network {
 	
 	public void populate(ArrayList<Double> weights) {
 		ArrayList<Neuron> neurons = getNeurons();
-		System.out.println("Weight size: " + weights.size());
-		System.out.println("Neurons: " + neurons.size());
+		//System.out.println("Weight size: " + weights.size());
+		//System.out.println("Neurons: " + neurons.size());
 		for(Neuron n : neurons) {
 			for(Neuron nn : n.weights.keySet()) {
 				n.weights.put(nn, weights.get(0));

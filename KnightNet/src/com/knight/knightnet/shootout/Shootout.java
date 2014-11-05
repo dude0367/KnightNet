@@ -97,7 +97,13 @@ public class Shootout extends JFrame implements Runnable {
 		ticks++;
 		if(ticks > 5000) {
 			System.out.print("EVOLVING (CURRENTLY " + generations + " GENERATION), ");
-			System.out.println("PEAK FITNESS: " + pop.getFittest());
+			//pop.setAgents(agents);
+			double average = 0;
+			for(ShootGame g : games) {
+				for(Agent a : g.getPlayers()) average += a.getFitness();
+			}
+			average /= games.size() * 2;
+			System.out.println("PEAK FITNESS: " + pop.getFittest() + " AVERAGE: " + average);
 			generations++;
 			if(generations % 5 == 0) {
 				System.out.println("CLEANSING WEAK");
