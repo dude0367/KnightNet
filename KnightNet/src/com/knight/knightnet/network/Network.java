@@ -63,4 +63,25 @@ public class Network {
 		return out;
 	}
 
+	public void fillWeights(int[] code) {
+		ArrayList<Double> weights = new ArrayList<Double>();
+		for(int i = 8; i < 8 + 16 * 16 * 16; i += 16) {
+			double d = 0;
+			int mult = 1;
+			for(int o = 1; o < 6; o++) {
+				d += code[i+o] * mult;
+				mult *= 2;
+			}
+			mult = 1;
+			for(int o = 6; o < 16; o++) {
+				d += ((double)code[i+o]) / (double)mult;
+				mult *= 2;
+			}
+			d *= code[i] == 1 ? 1 : -1; //Make negative or nah
+			weights.add(d);
+		}
+		System.out.println("Weight size: " + weights.size());
+		populate(weights);
+	}
+
 }

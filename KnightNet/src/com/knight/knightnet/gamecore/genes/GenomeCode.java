@@ -16,7 +16,7 @@ public class GenomeCode extends Genome {
 	protected static double mutationRate = 0.1;
 	protected double crossOverRate = .7;
 	protected ArrayList<Double> weights = new ArrayList<Double>();
-	protected int code[] = new int[8 + 16 * 16];
+	protected int code[] = new int[8 + 16 * 16 * 16];
 	//http://homepages.inf.ed.ac.uk/pkoehn/publications/gann94.pdf
 	/* Code Plan (Binary):
 	 * First 4: # of layers (+1 (can't be 0))
@@ -27,7 +27,7 @@ public class GenomeCode extends Genome {
 	 * 	5: Ones
 	 * 	10: Decimal
 	 * 
-	 * (This means that there must be 8 + 16^2 digits in the code) 
+	 * (This means that there must be 8 + 16^3 digits in the code) 
 	 */
 	
 	public GenomeCode(int inputNeurons, int outputNeurons) {
@@ -38,9 +38,22 @@ public class GenomeCode extends Genome {
 		this.setHiddenLayers(hiddenLayers);
 		this.setNeuronsPerLayer(neuronsPerLayer);
 		
-		//TODO: TURN FIRST 8 DIGITS OF CODE TO REFLECT SIZE OF NETWORK - USE THE CONVERT TO BINARY
-		
-		//network = new Network(hiddenLayers,inputNeurons, outputNeurons, neuronsPerLayer);
+		String layers = ConvertToBinary(hiddenLayers);
+		String neurons = ConvertToBinary(neuronsPerLayer);
+		for(int i = 0; i < 4; i++) {
+			if(layers.length() > 3 - i) {
+				code[i] = Integer.valueOf(layers.substring(i - (4 - layers.length()), i+1-(4 - layers.length())));
+			}
+			if(neurons.length() > 3 - i) {
+				code[i+4] = Integer.valueOf(neurons.substring(i- (4 - neurons.length()), i+1-(4 - neurons.length())));
+			}
+		}
+		for(int i = 8; i < 8 + 16 * 16 * 16; i++) {
+			code[i] = Math.random() < .5 ? 1 : 0;
+		}
+		network = new Network(hiddenLayers,inputNeurons, outputNeurons, neuronsPerLayer);
+		network.fillWeights(code);
+		System.out.println("Created");
 	}
 	
 	public static GenomeCode[] crossover(GenomeCode g1, GenomeCode g2) {

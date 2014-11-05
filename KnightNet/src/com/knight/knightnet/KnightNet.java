@@ -9,6 +9,7 @@ import com.knight.knightnet.network.Network;
 import com.knight.knightnet.pong.Pong;
 import com.knight.knightnet.reader.Reader;
 import com.knight.knightnet.shootout.Shootout;
+import com.knight.knightnet.test.GenomeCodeTester;
 import com.knight.knightnet.visualizer.Visualizer;
 
 /*(C) Copyright 2014-2015 dude0367 (Knight) & lkarinja (Karinja)
@@ -27,6 +28,8 @@ public class KnightNet {
 	static Shootout shootgame;
 	static Visualizer vis;
 	static Reader reader;
+	
+	static GenomeCodeTester codetester;
 
 	public static void main(String args[]) {//ENTRY POINT TO TEST NETWORK
 		Network network = new Network(1, 2, 2, 3);/*Create network with 1 hidden layer, 
@@ -85,6 +88,9 @@ public class KnightNet {
 				} else if(in.equalsIgnoreCase("reader") || in.equalsIgnoreCase("read")) {
 					reader = new Reader();
 					out = "Starting Reader";
+				} else if(in.equalsIgnoreCase("genome") || in.equalsIgnoreCase("code")) {
+					codetester = new GenomeCodeTester();
+					out = "Starting Genome Code Tester";
 				}
 
 				else {
