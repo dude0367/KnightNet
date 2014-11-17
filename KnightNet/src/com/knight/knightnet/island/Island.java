@@ -158,7 +158,7 @@ public class Island extends JFrame implements Runnable {
 				}
 			}
 			double[] output = s.getAgent().getGenome().getNetwork().process(new double[] {
-					Math.cos(s.getDirection()), Math.sin(s.getDirection()), foodVecX, foodVecY, gasVecX, gasVecY
+					Math.cos(s.getDirection()), Math.sin(s.getDirection()), foodVecX, foodVecY, gasVecX, gasVecY//CHANGE TO PRESENCE, NOT VECTOR http://doublezoom.free.fr/programmation/AG_Exemple_Survival.php
 			});
 			output[0] -= .5;
 			output[0] /= 4;
