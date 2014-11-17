@@ -267,6 +267,22 @@ class Vector<E> extends Object{
 		return s;
 	}
 }
+/*
+ * FIX ME PLEASE NATHAN
+class Plane extends Object{
+	Vector normal;
+	float distance;
+	Plane(){
+		
+	}
+	protected void setX(Vector normal){
+		this.normal=normal;
+	}
+	protected Vector getNormal(){
+		return this.normal;
+	}
+}
+*/
 class Calc implements Runnable{
 	private boolean isRunning=false;
 	private Thread thread=null;
@@ -301,7 +317,7 @@ class Calc implements Runnable{
 		eX=camera.x-superior.getWidth()/2; //Change me later
 		eY=camera.y-superior.getHeight()/2; //Change me later
 		//Keep this as 500 as it will affect the FOV (Can be changed later)
-		eZ=500;
+		eZ=90;
 		//Calculations
 		dX=Math.cos(thetaY)*(Math.sin(thetaZ)*(aY-cY)+Math.cos(thetaZ)*(aX-cY))-Math.sin(thetaY)*(aZ-cZ);
 		dY=Math.sin(thetaX)*(Math.cos(thetaY)*(aZ-cZ)+Math.sin(thetaY)*(Math.sin(thetaZ)*(aY-cY)+Math.cos(thetaZ)*(aX-cX)))+Math.cos(thetaX)*(Math.cos(thetaZ)*(aY-cY)-Math.sin(thetaZ)*(aX-cX));
@@ -396,3 +412,91 @@ class Calc implements Runnable{
 		return true;
 	}
 }
+
+/*
+ * HELP (This is code from http://www.cubic.org/docs/3dclip.htm used as reference)
+plane p;                      // plane to construct from a,b and c
+tvector a,b,c;                // points to build a plane from
+{
+   // build normal vector
+   tvector q,v;
+   q.x = b.x - a.x;    v.x = b.x - c.x;
+   q.y = b.y - a.y;    v.x = b.y - c.y;
+   q.z = b.y - a.y;    v.x = b.z - c.z;
+   p.normal = crossproduct (q,v);
+   normalize_vector (q.normal);
+
+   // calculate distance to origin
+   p.distance = dotproduct (p.normal, a);  // you could also use b or c
+}
+struct tvector
+{
+  float x,y,z;             // standard vector
+};
+
+struct plane
+{
+  tvector  normal;         // normalized Normal-Vector of the plane
+  float    distance;       // shortest distance from plane to Origin
+};
+
+struct frustum
+{
+  plane sides[4];          // represent the 4 sides of the frustum
+  plane znear;             // the z-near plane
+}
+void setup_frustum (float project_scale, float SX, float SY)
+// * project_scale is the projection scaling factor used in the perspective
+//   projection. It's the value you multiply x and y with before you divide
+//   them by z. (usually I use 256 for this value).
+//
+//  * SX and SY are the size of the viewport you want to draw at (320,200 anyone?)
+{
+  float angle_horizontal =  atan2(SX/2,project_scale)-0.0001;
+  float angle_vertical   =  atan2(SY/2,project_scale)-0.0001;
+  float sh               =  sin(angle_horizontal);
+  float sv               =  sin(angle_vertical);
+  float ch               =  cos(angle_horizontal);
+  float cv               =  cos(angle_vertical);
+  // left
+  sides[0].normal.x=ch;
+  sides[0].normal.y=0;
+  sides[0].normal.z=sh;
+  sides[0].distance = 0;
+  // right
+  sides[1].normal.x=-ch;
+  sides[1].normal.y=0;
+  sides[1].normal.z=sh;
+  sides[1].distance = 0;
+  // top
+  sides[2].normal.x=0;
+  sides[2].normal.y=cv;
+  sides[2].normal.z=sv;
+  sides[2].distance = 0;
+  // bottom
+  sides[3].normal.x=0;
+  sides[3].normal.y=-cv;
+  sides[3].normal.z=sv;
+  sides[3].distance = 0;
+  // z-near clipping plane
+  znear.normal.x=0;
+  znear.normal.y=0;
+  znear.normal.z=1;
+  znear.distance = -10;
+}
+distance = dotproduct (point, plane.normal) - plane.distance;
+
+//The distance is < zero if the point is on the backside of the plane. It's zero if the point is on the plane, and positive otherwise. If both points have a negative distance we can remove them. The line will be entirely on the backside of the plane. If both are positive we don't have to do anything (the line is completely visible). But if the signs are different we have to calculate the intersection point of the plane and the line:
+
+float da;   // distance plane -> point a
+float db;   // distance plane -> point b
+
+float s = da/(da-db);   // intersection factor (between 0 and 1)
+
+intersectpoint.x = a.x + s*(b.x-a.x);
+intersectpoint.y = a.y + s*(b.y-a.y);
+intersectpoint.z = a.z + s*(b.z-a.z);
+
+// need to clip more values (texture coordinates)? do it this way:
+intersectpoint.value = a.value + s*(b.value-a.value);
+*/
